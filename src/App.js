@@ -58,6 +58,13 @@ export default function App() {
         alert("You can't run from a trainer battle!");
     }
 
+    function returnToMain() {
+        setIsMenuHidden(false);
+        setIsBattleMenuHidden(true);
+        setIsItemMenuHidden(true);
+        setIsPartyMenuHidden(true);
+    }
+
     return (
         <>
             <div className="foe">
@@ -130,7 +137,9 @@ export default function App() {
                         <li>super potion</li>
                     </ul>
                 </div>
-                <button className="back">back</button>
+                <button className="back" onClick={returnToMain}>
+                    back
+                </button>
             </div>
         </>
     );
