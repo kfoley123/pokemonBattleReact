@@ -1,0 +1,33 @@
+.hidden {
+    visibility: hidden;
+}
+
+.healthBar {
+    border: 2px solid black;
+    background-color: green;
+    width: 150px;
+}
+
+.healthBar75 {
+    border: 2px solid black;
+    width: 150px;
+    background-image: linear-gradient(to right, green 75%, white 25%);
+}
+
+.healthBar50 {
+    border: 2px solid black;
+    width: 150px;
+    background-image: linear-gradient(to right, green 50%, white 50%);
+}
+
+.healthBar25 {
+    border: 2px solid black;
+    width: 150px;
+    background-image: linear-gradient(to left, white 75%, red 25%);
+}
+
+.healthBar0 {
+    border: 2px solid black;
+    width: 150px;
+    background-color: white;
+}

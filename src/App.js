@@ -1,25 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import cs from "classnames";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+    const [isMenuHidden, setIsMenuHidden] = useState(false);
+    return (
+        <>
+            <div className="foe">
+                <h2>NAME</h2>
+                <h3>L5</h3>
+                <div className="healthBar OppRemainingHealth"></div>
+                <img src="" alt="sprite" />
+            </div>
+            <div className="team">
+                <h2>NAME</h2>
+                <h3>L5</h3>
+                <div className="healthBar"></div>
+                <p className="remainingHealth"></p>
+                <img src="" alt="sprite" />
+            </div>
+            <div className="menu">
+                <div className="textBox hidden"></div>
+                <div
+                    className={cs("mainMenu", {
+                        hidden: isMenuHidden,
+                    })}
+                >
+                    <button className="fight">FIGHT</button>
+                    <button className="pkmn">PKMN</button>
+                    <button className="item">ITEM</button>
+                    <button className="run">RUN</button>
+                </div>
+                <div className="fightMenu hidden"></div>
+
+                <div className="partyList hidden">
+                    <ul>
+                        <li>charmander</li>
+                        <li>bulbasaur</li>
+                        <li>squirtle</li>
+                        <li>rhydon</li>
+                        <li>ghastly</li>
+                        <li>eevee</li>
+                    </ul>
+                </div>
+
+                <div className="itemList hidden">
+                    <ul>
+                        <li>potion</li>
+                        <li>pokeball</li>
+                        <li>berry</li>
+                        <li>silk scarf</li>
+                        <li>revive</li>
+                        <li>super potion</li>
+                    </ul>
+                </div>
+                <button className="back">back</button>
+            </div>
+        </>
+    );
 }
-
-export default App;
