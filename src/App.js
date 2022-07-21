@@ -5,6 +5,7 @@ import "./App.css";
 export default function App() {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
     const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
+    const [isPartyMenuHidden, setIsPartyMenuHidden] = useState(true);
 
     const moveSet = [
         {
@@ -42,6 +43,11 @@ export default function App() {
         setIsBattleMenuHidden(false);
     }
 
+    function changePokemon() {
+        setIsMenuHidden(true);
+        setIsPartyMenuHidden(false);
+    }
+
     return (
         <>
             <div className="foe">
@@ -67,7 +73,9 @@ export default function App() {
                     <button className="fight" onClick={attackMenu}>
                         FIGHT
                     </button>
-                    <button className="pkmn">PKMN</button>
+                    <button className="pkmn" onClick={changePokemon}>
+                        PKMN
+                    </button>
                     <button className="item">ITEM</button>
                     <button className="run">RUN</button>
                 </div>
@@ -79,7 +87,11 @@ export default function App() {
                     {battleMenu}
                 </div>
 
-                <div className="partyList hidden">
+                <div
+                    className={cs("partyList", {
+                        hidden: isPartyMenuHidden,
+                    })}
+                >
                     <ul>
                         <li>charmander</li>
                         <li>bulbasaur</li>
