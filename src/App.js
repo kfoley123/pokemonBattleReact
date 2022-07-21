@@ -7,6 +7,11 @@ export default function App() {
     const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
     const [isPartyMenuHidden, setIsPartyMenuHidden] = useState(true);
     const [isItemMenuHidden, setIsItemMenuHidden] = useState(true);
+    const [playerHP, setPlayerHP] = useState(40);
+    const [opponentHP, setOpponentHP] = useState(40);
+    const [playerPKMN, setPlayerPKMN] = useState("Nidorino");
+    const [oppPKMN, setOppPKMN] = useState("Gengar");
+    const [textBoxtext, setTextBoxText] = useState("");
 
     const moveSet = [
         {
@@ -27,13 +32,14 @@ export default function App() {
         },
     ];
 
-    function doMove() {
-        console.log("did the move");
-    }
-
     const battleMenu = moveSet.map((move) => {
         return (
-            <button className="attack" key={move.name} onClick={doMove}>
+            <button
+                className="attack"
+                key={move.name}
+                name={move.name}
+                onClick={doMove}
+            >
                 {move.name}
             </button>
         );
@@ -65,23 +71,52 @@ export default function App() {
         setIsPartyMenuHidden(true);
     }
 
+    function doMove(moveEvent) {
+        var clickedMoveName = moveEvent.target.name;
+        setTextBoxText(` ${playerPKMN} used ${clickedMoveName} `);
+        console.log(clickedMoveName);
+
+        //timeout for textbox???
+        // console.log(textBox);
+        // moveSet.forEach((move) => {
+        //     if (move.name === clickedMoveName) {
+        //         var newHP = opponentHP - move.damage;
+        //         if (newHP < 0) {
+        //             newHP = 0;
+        //         }
+        //         opponentHP = newHP;
+        //     }
+        //     oppHealthBar.innerHTML = `HP ${opponentHP}`;
+        //     // TODO: need to check opp heath and apply correct healthbar CSS class
+        //     oppHealthBar.classList.remove("heathBar");
+        //     oppHealthBar.classList.add("healthBar75");
+        // });
+    }
+
     return (
         <>
             <div className="foe">
                 <h2>NAME</h2>
-                <h3>L5</h3>
-                <div className="healthBar OppRemainingHealth"></div>
+                <h3>L20</h3>
+                <div className="healthBar"></div>
+                <p className="remainingHealth">{opponentHP}</p>
                 <img src="" alt="sprite" />
             </div>
             <div className="team">
                 <h2>NAME</h2>
-                <h3>L5</h3>
+                <h3>L20</h3>
                 <div className="healthBar"></div>
-                <p className="remainingHealth"></p>
+                <p className="remainingHealth">{playerHP}</p>
                 <img src="" alt="sprite" />
             </div>
             <div className="menu">
-                <div className="textBox hidden"></div>
+                <div
+                    className={cs("textBox", {
+                        hidden: textBoxtext === "",
+                    })}
+                >
+                    {textBoxtext}
+                </div>
                 <div
                     className={cs("mainMenu", {
                         hidden: isMenuHidden,
