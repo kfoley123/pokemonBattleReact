@@ -1,8 +1,47 @@
 import React, { useState } from "react";
 import cs from "classnames";
+import "./App.css";
 
 export default function App() {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
+    const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
+
+    const moveSet = [
+        {
+            name: "tackle",
+            damage: 10,
+        },
+        {
+            name: "growl",
+            damage: 0,
+        },
+        {
+            name: "scratch",
+            damage: 12,
+        },
+        {
+            name: "bite",
+            damage: 15,
+        },
+    ];
+
+    function doMove() {
+        console.log("did the move");
+    }
+
+    const battleMenu = moveSet.map((move) => {
+        return (
+            <button className="attack" key={move.name} onClick={doMove}>
+                {move.name}
+            </button>
+        );
+    });
+
+    function attackMenu() {
+        setIsMenuHidden(true);
+        setIsBattleMenuHidden(false);
+    }
+
     return (
         <>
             <div className="foe">
@@ -25,12 +64,20 @@ export default function App() {
                         hidden: isMenuHidden,
                     })}
                 >
-                    <button className="fight">FIGHT</button>
+                    <button className="fight" onClick={attackMenu}>
+                        FIGHT
+                    </button>
                     <button className="pkmn">PKMN</button>
                     <button className="item">ITEM</button>
                     <button className="run">RUN</button>
                 </div>
-                <div className="fightMenu hidden"></div>
+                <div
+                    className={cs("fightMenu", {
+                        hidden: isBattleMenuHidden,
+                    })}
+                >
+                    {battleMenu}
+                </div>
 
                 <div className="partyList hidden">
                     <ul>
