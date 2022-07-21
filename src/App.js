@@ -6,6 +6,7 @@ export default function App() {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
     const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
     const [isPartyMenuHidden, setIsPartyMenuHidden] = useState(true);
+    const [isItemMenuHidden, setIsItemMenuHidden] = useState(true);
 
     const moveSet = [
         {
@@ -48,6 +49,15 @@ export default function App() {
         setIsPartyMenuHidden(false);
     }
 
+    function item() {
+        setIsMenuHidden(true);
+        setIsItemMenuHidden(false);
+    }
+
+    function Run() {
+        alert("You can't run from a trainer battle!");
+    }
+
     return (
         <>
             <div className="foe">
@@ -76,8 +86,12 @@ export default function App() {
                     <button className="pkmn" onClick={changePokemon}>
                         PKMN
                     </button>
-                    <button className="item">ITEM</button>
-                    <button className="run">RUN</button>
+                    <button className="item" onClick={item}>
+                        ITEM
+                    </button>
+                    <button className="run" onClick={Run}>
+                        RUN
+                    </button>
                 </div>
                 <div
                     className={cs("fightMenu", {
@@ -102,7 +116,11 @@ export default function App() {
                     </ul>
                 </div>
 
-                <div className="itemList hidden">
+                <div
+                    className={cs("itemList", {
+                        hidden: isItemMenuHidden,
+                    })}
+                >
                     <ul>
                         <li>potion</li>
                         <li>pokeball</li>
