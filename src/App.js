@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import cs from "classnames";
 import "./App.css";
 
@@ -12,6 +12,7 @@ export default function App() {
     const [playerPKMN, setPlayerPKMN] = useState("Nidorino");
     const [oppPKMN, setOppPKMN] = useState("Gengar");
     const [textBoxtext, setTextBoxText] = useState("");
+    const [isOppTurn, setIsOppTurn] = useState(false);
 
     const moveSet = [
         {
@@ -71,41 +72,83 @@ export default function App() {
         setIsPartyMenuHidden(true);
     }
 
+    function disableMenu(isDisabled) {
+        setIsOppTurn(isDisabled);
+    }
+
+    function doOppMove() {
+        var opponentMove = moveSet[Math.floor(Math.random() * moveSet.length)];
+        setTextBoxText(`Opponent ${oppPKMN} used ${opponentMove.name}`);
+        console.log(opponentMove);
+
+        //timeout??
+
+        var tempHP = playerHP - opponentMove.damage;
+        if (tempHP < 0) {
+            tempHP = 0;
+        }
+        setPlayerHP(tempHP);
+
+        disableMenu(false);
+    }
+
     function doMove(moveEvent) {
         var clickedMoveName = moveEvent.target.name;
         setTextBoxText(` ${playerPKMN} used ${clickedMoveName} `);
-        console.log(clickedMoveName);
 
-        //timeout for textbox???
-        // console.log(textBox);
-        // moveSet.forEach((move) => {
-        //     if (move.name === clickedMoveName) {
-        //         var newHP = opponentHP - move.damage;
-        //         if (newHP < 0) {
-        //             newHP = 0;
-        //         }
-        //         opponentHP = newHP;
-        //     }
-        //     oppHealthBar.innerHTML = `HP ${opponentHP}`;
-        //     // TODO: need to check opp heath and apply correct healthbar CSS class
-        //     oppHealthBar.classList.remove("heathBar");
-        //     oppHealthBar.classList.add("healthBar75");
-        // });
+        // set timeout for textbox???
+        moveSet.forEach((move) => {
+            if (move.name === clickedMoveName) {
+                var newHP = opponentHP - move.damage;
+                if (newHP < 0) {
+                    newHP = 0;
+                }
+                setOpponentHP(newHP);
+            }
+        });
+        disableMenu(true);
+        returnToMain();
+        doOppMove();
     }
+
+    useEffect(() => {
+        if (opponentHP === 0) {
+            alert("Opponents pokemon has fainted!");
+        }
+        if (playerHP === 0) {
+            alert("Player's pokemon has fainted!");
+        }
+    }, [opponentHP, playerHP]);
 
     return (
         <>
             <div className="foe">
                 <h2>NAME</h2>
                 <h3>L20</h3>
-                <div className="healthBar"></div>
+                <div
+                    className={cs({
+                        healthBar: opponentHP === 40,
+                        healthBar75: opponentHP < 40 && opponentHP >= 30,
+                        healthBar50: opponentHP < 30 && opponentHP >= 20,
+                        healthBar25: opponentHP < 20 && opponentHP > 0,
+                        healthBar0: opponentHP === 0,
+                    })}
+                ></div>
                 <p className="remainingHealth">{opponentHP}</p>
                 <img src="" alt="sprite" />
             </div>
             <div className="team">
                 <h2>NAME</h2>
                 <h3>L20</h3>
-                <div className="healthBar"></div>
+                <div
+                    className={cs({
+                        healthBar: playerHP === 40,
+                        healthBar75: playerHP < 40 && playerHP >= 30,
+                        healthBar50: playerHP < 30 && playerHP >= 20,
+                        healthBar25: playerHP < 20 && playerHP > 0,
+                        healthBar0: playerHP === 0,
+                    })}
+                ></div>
                 <p className="remainingHealth">{playerHP}</p>
                 <img src="" alt="sprite" />
             </div>
@@ -122,16 +165,28 @@ export default function App() {
                         hidden: isMenuHidden,
                     })}
                 >
-                    <button className="fight" onClick={attackMenu}>
+                    <button
+                        className="fight"
+                        disabled={isOppTurn}
+                        onClick={attackMenu}
+                    >
                         FIGHT
                     </button>
-                    <button className="pkmn" onClick={changePokemon}>
+                    <button
+                        className="pkmn"
+                        disabled={isOppTurn}
+                        onClick={changePokemon}
+                    >
                         PKMN
                     </button>
-                    <button className="item" onClick={item}>
+                    <button
+                        className="item"
+                        disabled={isOppTurn}
+                        onClick={item}
+                    >
                         ITEM
                     </button>
-                    <button className="run" onClick={Run}>
+                    <button className="run" disabled={isOppTurn} onClick={Run}>
                         RUN
                     </button>
                 </div>
