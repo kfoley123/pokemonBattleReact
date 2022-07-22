@@ -81,8 +81,6 @@ export default function App() {
         setTextBoxText(`Opponent ${oppPKMN} used ${opponentMove.name}`);
         console.log(opponentMove);
 
-        //timeout??
-
         var tempHP = playerHP - opponentMove.damage;
         if (tempHP < 0) {
             tempHP = 0;
@@ -96,7 +94,6 @@ export default function App() {
         var clickedMoveName = moveEvent.target.name;
         setTextBoxText(` ${playerPKMN} used ${clickedMoveName} `);
 
-        // set timeout for textbox???
         moveSet.forEach((move) => {
             if (move.name === clickedMoveName) {
                 var newHP = opponentHP - move.damage;
@@ -108,22 +105,24 @@ export default function App() {
         });
         disableMenu(true);
         returnToMain();
-        doOppMove();
+        setTimeout(() => doOppMove(), 3000);
     }
 
     useEffect(() => {
         if (opponentHP === 0) {
-            alert("Opponents pokemon has fainted!");
+            setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
+            disableMenu(true);
         }
         if (playerHP === 0) {
-            alert("Player's pokemon has fainted!");
+            setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
+            disableMenu(true);
         }
     }, [opponentHP, playerHP]);
 
     return (
         <>
             <div className="foe">
-                <h2>NAME</h2>
+                <h2>{oppPKMN}</h2>
                 <h3>L20</h3>
                 <div
                     className={cs({
@@ -138,7 +137,7 @@ export default function App() {
                 <img src="" alt="sprite" />
             </div>
             <div className="team">
-                <h2>NAME</h2>
+                <h2>{playerPKMN}</h2>
                 <h3>L20</h3>
                 <div
                     className={cs({
@@ -197,6 +196,9 @@ export default function App() {
                 >
                     {battleMenu}
                 </div>
+                <button className="back" onClick={returnToMain}>
+                    back
+                </button>
 
                 <div
                     className={cs("partyList", {
@@ -227,9 +229,6 @@ export default function App() {
                         <li>super potion</li>
                     </ul>
                 </div>
-                <button className="back" onClick={returnToMain}>
-                    back
-                </button>
             </div>
         </>
     );
