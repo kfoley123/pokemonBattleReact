@@ -7,8 +7,8 @@ export default function App() {
     const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
     const [isPartyMenuHidden, setIsPartyMenuHidden] = useState(true);
     const [isItemMenuHidden, setIsItemMenuHidden] = useState(true);
-    const [playerHP, setPlayerHP] = useState(40);
-    const [opponentHP, setOpponentHP] = useState(40);
+    const [playerHP, setPlayerHP] = useState();
+    const [opponentHP, setOpponentHP] = useState();
     const [playerPKMN, setPlayerPKMN] = useState("Nidorino");
     const [oppPKMN, setOppPKMN] = useState("Gengar");
     const [textBoxtext, setTextBoxText] = useState("");
@@ -36,8 +36,11 @@ export default function App() {
                 let pokemonObj = {
                     name: capitalize(response.species.name),
                     sprite: response.sprites.back_default,
+                    hp: response.stats[0].base_stat,
+                    moves: response.moves,
                 };
                 setplayerPokemonObject(pokemonObj);
+                setPlayerHP(pokemonObj.hp);
             });
 
         fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
@@ -46,8 +49,11 @@ export default function App() {
                 let pokemonObj = {
                     name: capitalize(response.species.name),
                     sprite: response.sprites.front_default,
+                    hp: response.stats[0].base_stat,
+                    moves: response.moves,
                 };
                 setOppPokemonObject(pokemonObj);
+                setOpponentHP(pokemonObj.hp);
             });
     }, []);
 
@@ -165,10 +171,16 @@ export default function App() {
                 <h3>L20</h3>
                 <div
                     className={cs({
-                        healthBar: opponentHP === 40,
-                        healthBar75: opponentHP < 40 && opponentHP >= 30,
-                        healthBar50: opponentHP < 30 && opponentHP >= 20,
-                        healthBar25: opponentHP < 20 && opponentHP > 0,
+                        healthBar: opponentHP === oppPokemonObject.hp,
+                        healthBar75:
+                            opponentHP < oppPokemonObject.hp * 0.99 &&
+                            opponentHP >= oppPokemonObject.hp * 0.51,
+                        healthBar50:
+                            opponentHP < oppPokemonObject.hp * 0.51 &&
+                            opponentHP >= oppPokemonObject.hp * 0.26,
+                        healthBar25:
+                            opponentHP < oppPokemonObject.hp * 0.25 &&
+                            opponentHP > 0,
                         healthBar0: opponentHP === 0,
                     })}
                 ></div>
@@ -180,10 +192,16 @@ export default function App() {
                 <h3>L20</h3>
                 <div
                     className={cs({
-                        healthBar: playerHP === 40,
-                        healthBar75: playerHP < 40 && playerHP >= 30,
-                        healthBar50: playerHP < 30 && playerHP >= 20,
-                        healthBar25: playerHP < 20 && playerHP > 0,
+                        healthBar: playerHP === playerPokemonObject.hp,
+                        healthBar75:
+                            playerHP < playerPokemonObject.hp * 0.99 &&
+                            playerHP >= playerPokemonObject.hp * 0.51,
+                        healthBar50:
+                            playerHP < playerPokemonObject.hp * 0.51 &&
+                            playerHP >= playerPokemonObject.hp * 0.26,
+                        healthBar25:
+                            playerHP < playerPokemonObject.hp * 0.25 &&
+                            playerHP > 0,
                         healthBar0: playerHP === 0,
                     })}
                 ></div>
