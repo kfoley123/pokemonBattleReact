@@ -14,6 +14,43 @@ export default function App() {
     const [textBoxtext, setTextBoxText] = useState("");
     const [isOppTurn, setIsOppTurn] = useState(false);
 
+    const [playerPokemonObject, setplayerPokemonObject] = useState({});
+    const [oppPokemonObject, setOppPokemonObject] = useState({});
+
+    function randomNumber(max) {
+        return Math.floor(Math.random() * max) + 1;
+    }
+
+    function capitalize(name) {
+        let capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+        return capitalizedName;
+    }
+
+    console.log(capitalize("bob"));
+
+    useEffect(() => {
+        console.log("dog");
+        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+            .then((response) => response.json())
+            .then((response) => {
+                let pokemonObj = {
+                    name: capitalize(response.species.name),
+                    sprite: response.sprites.back_default,
+                };
+                setplayerPokemonObject(pokemonObj);
+            });
+
+        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+            .then((response) => response.json())
+            .then((response) => {
+                let pokemonObj = {
+                    name: capitalize(response.species.name),
+                    sprite: response.sprites.front_default,
+                };
+                setOppPokemonObject(pokemonObj);
+            });
+    }, []);
+
     const moveSet = [
         {
             name: "tackle",
@@ -78,7 +115,9 @@ export default function App() {
 
     function doOppMove() {
         var opponentMove = moveSet[Math.floor(Math.random() * moveSet.length)];
-        setTextBoxText(`Opponent ${oppPKMN} used ${opponentMove.name}`);
+        setTextBoxText(
+            `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`
+        );
         console.log(opponentMove);
 
         var tempHP = playerHP - opponentMove.damage;
@@ -92,7 +131,7 @@ export default function App() {
 
     function doMove(moveEvent) {
         var clickedMoveName = moveEvent.target.name;
-        setTextBoxText(` ${playerPKMN} used ${clickedMoveName} `);
+        setTextBoxText(` ${playerPokemonObject.name} used ${clickedMoveName} `);
 
         moveSet.forEach((move) => {
             if (move.name === clickedMoveName) {
@@ -122,7 +161,7 @@ export default function App() {
     return (
         <>
             <div className="foe">
-                <h2>{oppPKMN}</h2>
+                <h2>{oppPokemonObject.name}</h2>
                 <h3>L20</h3>
                 <div
                     className={cs({
@@ -134,10 +173,10 @@ export default function App() {
                     })}
                 ></div>
                 <p className="remainingHealth">{opponentHP}</p>
-                <img src="" alt="sprite" />
+                <img src={oppPokemonObject.sprite} alt="sprite" />
             </div>
             <div className="team">
-                <h2>{playerPKMN}</h2>
+                <h2>{playerPokemonObject.name}</h2>
                 <h3>L20</h3>
                 <div
                     className={cs({
@@ -149,7 +188,7 @@ export default function App() {
                     })}
                 ></div>
                 <p className="remainingHealth">{playerHP}</p>
-                <img src="" alt="sprite" />
+                <img src={playerPokemonObject.sprite} alt="sprite" />
             </div>
             <div className="menu">
                 <div
