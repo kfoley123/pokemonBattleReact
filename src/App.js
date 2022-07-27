@@ -9,13 +9,21 @@ export default function App() {
     const [isItemMenuHidden, setIsItemMenuHidden] = useState(true);
     const [playerHP, setPlayerHP] = useState();
     const [opponentHP, setOpponentHP] = useState();
-    const [playerPKMN, setPlayerPKMN] = useState("Nidorino");
-    const [oppPKMN, setOppPKMN] = useState("Gengar");
     const [textBoxtext, setTextBoxText] = useState("");
     const [isOppTurn, setIsOppTurn] = useState(false);
 
-    const [playerPokemonObject, setplayerPokemonObject] = useState({});
-    const [oppPokemonObject, setOppPokemonObject] = useState({});
+    const [playerPokemonObject, setplayerPokemonObject] = useState({
+        name: "",
+        sprite: "",
+        hp: 0,
+        moves: [],
+    });
+    const [oppPokemonObject, setOppPokemonObject] = useState({
+        name: "",
+        sprite: "",
+        hp: 0,
+        moves: [],
+    });
 
     function randomNumber(max) {
         return Math.floor(Math.random() * max) + 1;
@@ -26,18 +34,25 @@ export default function App() {
         return capitalizedName;
     }
 
-    console.log(capitalize("bob"));
-
     useEffect(() => {
-        console.log("dog");
         fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
             .then((response) => response.json())
             .then((response) => {
+                let moveSet = [];
+
+                response.moves.forEach((move) => {
+                    let pokemonMove = {
+                        name: move.move.name,
+                        damage: 15,
+                    };
+                    moveSet.push(pokemonMove);
+                });
+
                 let pokemonObj = {
                     name: capitalize(response.species.name),
                     sprite: response.sprites.back_default,
                     hp: response.stats[0].base_stat,
-                    moves: response.moves,
+                    moves: moveSet.slice(0, 4),
                 };
                 setplayerPokemonObject(pokemonObj);
                 setPlayerHP(pokemonObj.hp);
@@ -46,37 +61,29 @@ export default function App() {
         fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
             .then((response) => response.json())
             .then((response) => {
+                let moveSet = [];
+
+                response.moves.forEach((move) => {
+                    let pokemonMove = {
+                        name: move.move.name,
+                        damage: 15,
+                    };
+                    moveSet.push(pokemonMove);
+                });
+
                 let pokemonObj = {
                     name: capitalize(response.species.name),
                     sprite: response.sprites.front_default,
                     hp: response.stats[0].base_stat,
-                    moves: response.moves,
+                    moves: moveSet.slice(0, 4),
                 };
+
                 setOppPokemonObject(pokemonObj);
                 setOpponentHP(pokemonObj.hp);
             });
     }, []);
 
-    const moveSet = [
-        {
-            name: "tackle",
-            damage: 10,
-        },
-        {
-            name: "growl",
-            damage: 0,
-        },
-        {
-            name: "scratch",
-            damage: 12,
-        },
-        {
-            name: "bite",
-            damage: 15,
-        },
-    ];
-
-    const battleMenu = moveSet.map((move) => {
+    const battleMenu = playerPokemonObject.moves.map((move) => {
         return (
             <button
                 className="attack"
@@ -120,11 +127,13 @@ export default function App() {
     }
 
     function doOppMove() {
-        var opponentMove = moveSet[Math.floor(Math.random() * moveSet.length)];
+        var opponentMove =
+            oppPokemonObject.moves[
+                Math.floor(Math.random() * oppPokemonObject.moves.length)
+            ];
         setTextBoxText(
             `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`
         );
-        console.log(opponentMove);
 
         var tempHP = playerHP - opponentMove.damage;
         if (tempHP < 0) {
@@ -139,7 +148,7 @@ export default function App() {
         var clickedMoveName = moveEvent.target.name;
         setTextBoxText(` ${playerPokemonObject.name} used ${clickedMoveName} `);
 
-        moveSet.forEach((move) => {
+        playerPokemonObject.moves.forEach((move) => {
             if (move.name === clickedMoveName) {
                 var newHP = opponentHP - move.damage;
                 if (newHP < 0) {
@@ -263,12 +272,12 @@ export default function App() {
                     })}
                 >
                     <ul>
-                        <li>charmander</li>
-                        <li>bulbasaur</li>
-                        <li>squirtle</li>
-                        <li>rhydon</li>
-                        <li>ghastly</li>
-                        <li>eevee</li>
+                        <li>Charmander</li>
+                        <li>Bulbasaur</li>
+                        <li>Squirtle</li>
+                        <li>Rhydon</li>
+                        <li>Ghastly</li>
+                        <li>Eevee</li>
                     </ul>
                 </div>
 
@@ -278,12 +287,12 @@ export default function App() {
                     })}
                 >
                     <ul>
-                        <li>potion</li>
-                        <li>pokeball</li>
-                        <li>berry</li>
-                        <li>silk scarf</li>
-                        <li>revive</li>
-                        <li>super potion</li>
+                        <li>Potion</li>
+                        <li>Pokeball</li>
+                        <li>Berry</li>
+                        <li>Silk Scarf</li>
+                        <li>Revive</li>
+                        <li>Super Potion</li>
                     </ul>
                 </div>
             </div>
