@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import cs from "classnames";
 import "./App.css";
 
@@ -7,6 +7,12 @@ export default function App() {
     const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
     const [isPartyMenuHidden, setIsPartyMenuHidden] = useState(true);
     const [isItemMenuHidden, setIsItemMenuHidden] = useState(true);
+    const [playerHP, setPlayerHP] = useState(40);
+    const [opponentHP, setOpponentHP] = useState(40);
+    const [playerPKMN, setPlayerPKMN] = useState("Nidorino");
+    const [oppPKMN, setOppPKMN] = useState("Gengar");
+    const [textBoxtext, setTextBoxText] = useState("");
+    const [isOppTurn, setIsOppTurn] = useState(false);
 
     const moveSet = [
         {
@@ -27,13 +33,14 @@ export default function App() {
         },
     ];
 
-    function doMove() {
-        console.log("did the move");
-    }
-
     const battleMenu = moveSet.map((move) => {
         return (
-            <button className="attack" key={move.name} onClick={doMove}>
+            <button
+                className="attack"
+                key={move.name}
+                name={move.name}
+                onClick={doMove}
+            >
                 {move.name}
             </button>
         );
@@ -65,38 +72,120 @@ export default function App() {
         setIsPartyMenuHidden(true);
     }
 
+    function disableMenu(isDisabled) {
+        setIsOppTurn(isDisabled);
+    }
+
+    function doOppMove() {
+        var opponentMove = moveSet[Math.floor(Math.random() * moveSet.length)];
+        setTextBoxText(`Opponent ${oppPKMN} used ${opponentMove.name}`);
+        console.log(opponentMove);
+
+        var tempHP = playerHP - opponentMove.damage;
+        if (tempHP < 0) {
+            tempHP = 0;
+        }
+        setPlayerHP(tempHP);
+
+        disableMenu(false);
+    }
+
+    function doMove(moveEvent) {
+        var clickedMoveName = moveEvent.target.name;
+        setTextBoxText(` ${playerPKMN} used ${clickedMoveName} `);
+
+        moveSet.forEach((move) => {
+            if (move.name === clickedMoveName) {
+                var newHP = opponentHP - move.damage;
+                if (newHP < 0) {
+                    newHP = 0;
+                }
+                setOpponentHP(newHP);
+            }
+        });
+        disableMenu(true);
+        returnToMain();
+        setTimeout(() => doOppMove(), 3000);
+    }
+
+    useEffect(() => {
+        if (opponentHP === 0) {
+            setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
+            disableMenu(true);
+        }
+        if (playerHP === 0) {
+            setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
+            disableMenu(true);
+        }
+    }, [opponentHP, playerHP]);
+
     return (
         <>
             <div className="foe">
-                <h2>NAME</h2>
-                <h3>L5</h3>
-                <div className="healthBar OppRemainingHealth"></div>
+                <h2>{oppPKMN}</h2>
+                <h3>L20</h3>
+                <div
+                    className={cs({
+                        healthBar: opponentHP === 40,
+                        healthBar75: opponentHP < 40 && opponentHP >= 30,
+                        healthBar50: opponentHP < 30 && opponentHP >= 20,
+                        healthBar25: opponentHP < 20 && opponentHP > 0,
+                        healthBar0: opponentHP === 0,
+                    })}
+                ></div>
+                <p className="remainingHealth">{opponentHP}</p>
                 <img src="" alt="sprite" />
             </div>
             <div className="team">
-                <h2>NAME</h2>
-                <h3>L5</h3>
-                <div className="healthBar"></div>
-                <p className="remainingHealth"></p>
+                <h2>{playerPKMN}</h2>
+                <h3>L20</h3>
+                <div
+                    className={cs({
+                        healthBar: playerHP === 40,
+                        healthBar75: playerHP < 40 && playerHP >= 30,
+                        healthBar50: playerHP < 30 && playerHP >= 20,
+                        healthBar25: playerHP < 20 && playerHP > 0,
+                        healthBar0: playerHP === 0,
+                    })}
+                ></div>
+                <p className="remainingHealth">{playerHP}</p>
                 <img src="" alt="sprite" />
             </div>
             <div className="menu">
-                <div className="textBox hidden"></div>
+                <div
+                    className={cs("textBox", {
+                        hidden: textBoxtext === "",
+                    })}
+                >
+                    {textBoxtext}
+                </div>
                 <div
                     className={cs("mainMenu", {
                         hidden: isMenuHidden,
                     })}
                 >
-                    <button className="fight" onClick={attackMenu}>
+                    <button
+                        className="fight"
+                        disabled={isOppTurn}
+                        onClick={attackMenu}
+                    >
                         FIGHT
                     </button>
-                    <button className="pkmn" onClick={changePokemon}>
+                    <button
+                        className="pkmn"
+                        disabled={isOppTurn}
+                        onClick={changePokemon}
+                    >
                         PKMN
                     </button>
-                    <button className="item" onClick={item}>
+                    <button
+                        className="item"
+                        disabled={isOppTurn}
+                        onClick={item}
+                    >
                         ITEM
                     </button>
-                    <button className="run" onClick={Run}>
+                    <button className="run" disabled={isOppTurn} onClick={Run}>
                         RUN
                     </button>
                 </div>
@@ -107,6 +196,9 @@ export default function App() {
                 >
                     {battleMenu}
                 </div>
+                <button className="back" onClick={returnToMain}>
+                    back
+                </button>
 
                 <div
                     className={cs("partyList", {
@@ -137,9 +229,6 @@ export default function App() {
                         <li>super potion</li>
                     </ul>
                 </div>
-                <button className="back" onClick={returnToMain}>
-                    back
-                </button>
             </div>
         </>
     );
