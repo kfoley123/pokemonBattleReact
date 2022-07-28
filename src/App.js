@@ -3,6 +3,7 @@ import cs from "classnames";
 import "./App.css";
 import Foe from "./Foe/Foe";
 import Player from "./Player/Player";
+import Menu from "./Menu/Menu";
 
 export default function App() {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
@@ -113,7 +114,7 @@ export default function App() {
         setIsItemMenuHidden(false);
     }
 
-    function Run() {
+    function run() {
         alert("You can't run from a trainer battle!");
     }
 
@@ -189,85 +190,20 @@ export default function App() {
                 playerPokemonObject={playerPokemonObject}
                 playerHP={playerHP}
             />
-            <div className="menu">
-                <div
-                    className={cs("textBox", {
-                        hidden: textBoxtext === "",
-                    })}
-                >
-                    {textBoxtext}
-                </div>
-                <div
-                    className={cs("mainMenu", {
-                        hidden: isMenuHidden,
-                    })}
-                >
-                    <button
-                        className="fight"
-                        disabled={isOppTurn}
-                        onClick={attackMenu}
-                    >
-                        FIGHT
-                    </button>
-                    <button
-                        className="pkmn"
-                        disabled={isOppTurn}
-                        onClick={changePokemon}
-                    >
-                        PKMN
-                    </button>
-                    <button
-                        className="item"
-                        disabled={isOppTurn}
-                        onClick={item}
-                    >
-                        ITEM
-                    </button>
-                    <button className="run" disabled={isOppTurn} onClick={Run}>
-                        RUN
-                    </button>
-                </div>
-                <div
-                    className={cs("fightMenu", {
-                        hidden: isBattleMenuHidden,
-                    })}
-                >
-                    {battleMenu}
-                </div>
-                <button className="back" onClick={returnToMain}>
-                    back
-                </button>
-
-                <div
-                    className={cs("partyList", {
-                        hidden: isPartyMenuHidden,
-                    })}
-                >
-                    <ul>
-                        <li>Charmander</li>
-                        <li>Bulbasaur</li>
-                        <li>Squirtle</li>
-                        <li>Rhydon</li>
-                        <li>Ghastly</li>
-                        <li>Eevee</li>
-                    </ul>
-                </div>
-
-                <div
-                    className={cs("itemList", {
-                        hidden: isItemMenuHidden,
-                    })}
-                >
-                    <ul>
-                        <li>Potion</li>
-                        <li>Pokeball</li>
-                        <li>Berry</li>
-                        <li>Silk Scarf</li>
-                        <li>Revive</li>
-                        <li>Super Potion</li>
-                    </ul>
-                </div>
-            </div>
+            <Menu
+                textBoxtext={textBoxtext}
+                isMenuHidden={isMenuHidden}
+                isOppTurn={isOppTurn}
+                attackMenu={attackMenu}
+                changePokemon={changePokemon}
+                item={item}
+                isBattleMenuHidden={isBattleMenuHidden}
+                battleMenu={battleMenu}
+                run={run}
+                returnToMain={returnToMain}
+                isPartyMenuHidden={isPartyMenuHidden}
+                isItemMenuHidden={isItemMenuHidden}
+            />
         </>
     );
 }
