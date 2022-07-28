@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import cs from "classnames";
 import "./App.css";
-import Foe from "./Foe";
+import Foe from "./Foe/Foe";
+import Player from "./Player/Player";
 
 export default function App() {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
@@ -184,27 +185,10 @@ export default function App() {
     return (
         <>
             <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
-            <div className="team">
-                <h2>{playerPokemonObject.name}</h2>
-                <h3>L20</h3>
-                <div
-                    className={cs({
-                        healthBar: playerHP === playerPokemonObject.hp,
-                        healthBar75:
-                            playerHP < playerPokemonObject.hp * 0.99 &&
-                            playerHP >= playerPokemonObject.hp * 0.51,
-                        healthBar50:
-                            playerHP < playerPokemonObject.hp * 0.51 &&
-                            playerHP >= playerPokemonObject.hp * 0.26,
-                        healthBar25:
-                            playerHP < playerPokemonObject.hp * 0.25 &&
-                            playerHP > 0,
-                        healthBar0: playerHP === 0,
-                    })}
-                ></div>
-                <p className="remainingHealth">{playerHP}</p>
-                <img src={playerPokemonObject.sprite} alt="sprite" />
-            </div>
+            <Player
+                playerPokemonObject={playerPokemonObject}
+                playerHP={playerHP}
+            />
             <div className="menu">
                 <div
                     className={cs("textBox", {
