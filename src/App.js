@@ -15,13 +15,13 @@ export default function App() {
     const [playerPokemonObject, setplayerPokemonObject] = useState({
         name: "",
         sprite: "",
-        hp: 0,
+        hp: 999,
         moves: [],
     });
     const [oppPokemonObject, setOppPokemonObject] = useState({
         name: "",
         sprite: "",
-        hp: 0,
+        hp: 999,
         moves: [],
     });
 
@@ -58,7 +58,7 @@ export default function App() {
                 setPlayerHP(pokemonObj.hp);
             });
 
-        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+        fetch(`https://pokeapi.co/api/v2/pokemon/${121}`)
             .then((response) => response.json())
             .then((response) => {
                 let moveSet = [];
@@ -159,10 +159,17 @@ export default function App() {
         });
         disableMenu(true);
         returnToMain();
-        setTimeout(() => doOppMove(), 3000);
+        setIsOppTurn(true);
     }
 
     useEffect(() => {
+        if (opponentHP > 0 && isOppTurn) {
+            setTimeout(() => {
+                doOppMove();
+                setIsOppTurn(false);
+            }, 3000);
+        }
+
         if (opponentHP === 0) {
             setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
             disableMenu(true);
@@ -188,11 +195,12 @@ export default function App() {
                             opponentHP < oppPokemonObject.hp * 0.51 &&
                             opponentHP >= oppPokemonObject.hp * 0.26,
                         healthBar25:
-                            opponentHP < oppPokemonObject.hp * 0.25 &&
+                            opponentHP <= oppPokemonObject.hp * 0.25 &&
                             opponentHP > 0,
                         healthBar0: opponentHP === 0,
                     })}
                 ></div>
+
                 <p className="remainingHealth">{opponentHP}</p>
                 <img src={oppPokemonObject.sprite} alt="sprite" />
             </div>
