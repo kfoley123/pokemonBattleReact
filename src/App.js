@@ -7,33 +7,83 @@ export default function App() {
     const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
     const [isPartyMenuHidden, setIsPartyMenuHidden] = useState(true);
     const [isItemMenuHidden, setIsItemMenuHidden] = useState(true);
-    const [playerHP, setPlayerHP] = useState(40);
-    const [opponentHP, setOpponentHP] = useState(40);
-    const [playerPKMN, setPlayerPKMN] = useState("Nidorino");
-    const [oppPKMN, setOppPKMN] = useState("Gengar");
+    const [playerHP, setPlayerHP] = useState();
+    const [opponentHP, setOpponentHP] = useState();
     const [textBoxtext, setTextBoxText] = useState("");
     const [isOppTurn, setIsOppTurn] = useState(false);
 
-    const moveSet = [
-        {
-            name: "tackle",
-            damage: 10,
-        },
-        {
-            name: "growl",
-            damage: 0,
-        },
-        {
-            name: "scratch",
-            damage: 12,
-        },
-        {
-            name: "bite",
-            damage: 15,
-        },
-    ];
+    const [playerPokemonObject, setplayerPokemonObject] = useState({
+        name: "",
+        sprite: "",
+        hp: 999,
+        moves: [],
+    });
+    const [oppPokemonObject, setOppPokemonObject] = useState({
+        name: "",
+        sprite: "",
+        hp: 999,
+        moves: [],
+    });
 
-    const battleMenu = moveSet.map((move) => {
+    function randomNumber(max) {
+        return Math.floor(Math.random() * max) + 1;
+    }
+
+    function capitalize(name) {
+        let capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+        return capitalizedName;
+    }
+
+    useEffect(() => {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+            .then((response) => response.json())
+            .then((response) => {
+                let moveSet = [];
+
+                response.moves.forEach((move) => {
+                    let pokemonMove = {
+                        name: move.move.name,
+                        damage: 15,
+                    };
+                    moveSet.push(pokemonMove);
+                });
+
+                let pokemonObj = {
+                    name: capitalize(response.species.name),
+                    sprite: response.sprites.back_default,
+                    hp: response.stats[0].base_stat,
+                    moves: moveSet.slice(0, 4),
+                };
+                setplayerPokemonObject(pokemonObj);
+                setPlayerHP(pokemonObj.hp);
+            });
+
+        fetch(`https://pokeapi.co/api/v2/pokemon/${121}`)
+            .then((response) => response.json())
+            .then((response) => {
+                let moveSet = [];
+
+                response.moves.forEach((move) => {
+                    let pokemonMove = {
+                        name: move.move.name,
+                        damage: 15,
+                    };
+                    moveSet.push(pokemonMove);
+                });
+
+                let pokemonObj = {
+                    name: capitalize(response.species.name),
+                    sprite: response.sprites.front_default,
+                    hp: response.stats[0].base_stat,
+                    moves: moveSet.slice(0, 4),
+                };
+
+                setOppPokemonObject(pokemonObj);
+                setOpponentHP(pokemonObj.hp);
+            });
+    }, []);
+
+    const battleMenu = playerPokemonObject.moves.map((move) => {
         return (
             <button
                 className="attack"
@@ -77,9 +127,13 @@ export default function App() {
     }
 
     function doOppMove() {
-        var opponentMove = moveSet[Math.floor(Math.random() * moveSet.length)];
-        setTextBoxText(`Opponent ${oppPKMN} used ${opponentMove.name}`);
-        console.log(opponentMove);
+        var opponentMove =
+            oppPokemonObject.moves[
+                Math.floor(Math.random() * oppPokemonObject.moves.length)
+            ];
+        setTextBoxText(
+            `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`
+        );
 
         var tempHP = playerHP - opponentMove.damage;
         if (tempHP < 0) {
@@ -92,9 +146,9 @@ export default function App() {
 
     function doMove(moveEvent) {
         var clickedMoveName = moveEvent.target.name;
-        setTextBoxText(` ${playerPKMN} used ${clickedMoveName} `);
+        setTextBoxText(` ${playerPokemonObject.name} used ${clickedMoveName} `);
 
-        moveSet.forEach((move) => {
+        playerPokemonObject.moves.forEach((move) => {
             if (move.name === clickedMoveName) {
                 var newHP = opponentHP - move.damage;
                 if (newHP < 0) {
@@ -105,10 +159,17 @@ export default function App() {
         });
         disableMenu(true);
         returnToMain();
-        setTimeout(() => doOppMove(), 3000);
+        setIsOppTurn(true);
     }
 
     useEffect(() => {
+        if (opponentHP > 0 && isOppTurn) {
+            setTimeout(() => {
+                doOppMove();
+                setIsOppTurn(false);
+            }, 3000);
+        }
+
         if (opponentHP === 0) {
             setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
             disableMenu(true);
@@ -122,34 +183,47 @@ export default function App() {
     return (
         <>
             <div className="foe">
-                <h2>{oppPKMN}</h2>
+                <h2>{oppPokemonObject.name}</h2>
                 <h3>L20</h3>
                 <div
                     className={cs({
-                        healthBar: opponentHP === 40,
-                        healthBar75: opponentHP < 40 && opponentHP >= 30,
-                        healthBar50: opponentHP < 30 && opponentHP >= 20,
-                        healthBar25: opponentHP < 20 && opponentHP > 0,
+                        healthBar: opponentHP === oppPokemonObject.hp,
+                        healthBar75:
+                            opponentHP < oppPokemonObject.hp * 0.99 &&
+                            opponentHP >= oppPokemonObject.hp * 0.51,
+                        healthBar50:
+                            opponentHP < oppPokemonObject.hp * 0.51 &&
+                            opponentHP >= oppPokemonObject.hp * 0.26,
+                        healthBar25:
+                            opponentHP <= oppPokemonObject.hp * 0.25 &&
+                            opponentHP > 0,
                         healthBar0: opponentHP === 0,
                     })}
                 ></div>
+
                 <p className="remainingHealth">{opponentHP}</p>
-                <img src="" alt="sprite" />
+                <img src={oppPokemonObject.sprite} alt="sprite" />
             </div>
             <div className="team">
-                <h2>{playerPKMN}</h2>
+                <h2>{playerPokemonObject.name}</h2>
                 <h3>L20</h3>
                 <div
                     className={cs({
-                        healthBar: playerHP === 40,
-                        healthBar75: playerHP < 40 && playerHP >= 30,
-                        healthBar50: playerHP < 30 && playerHP >= 20,
-                        healthBar25: playerHP < 20 && playerHP > 0,
+                        healthBar: playerHP === playerPokemonObject.hp,
+                        healthBar75:
+                            playerHP < playerPokemonObject.hp * 0.99 &&
+                            playerHP >= playerPokemonObject.hp * 0.51,
+                        healthBar50:
+                            playerHP < playerPokemonObject.hp * 0.51 &&
+                            playerHP >= playerPokemonObject.hp * 0.26,
+                        healthBar25:
+                            playerHP < playerPokemonObject.hp * 0.25 &&
+                            playerHP > 0,
                         healthBar0: playerHP === 0,
                     })}
                 ></div>
                 <p className="remainingHealth">{playerHP}</p>
-                <img src="" alt="sprite" />
+                <img src={playerPokemonObject.sprite} alt="sprite" />
             </div>
             <div className="menu">
                 <div
@@ -206,12 +280,12 @@ export default function App() {
                     })}
                 >
                     <ul>
-                        <li>charmander</li>
-                        <li>bulbasaur</li>
-                        <li>squirtle</li>
-                        <li>rhydon</li>
-                        <li>ghastly</li>
-                        <li>eevee</li>
+                        <li>Charmander</li>
+                        <li>Bulbasaur</li>
+                        <li>Squirtle</li>
+                        <li>Rhydon</li>
+                        <li>Ghastly</li>
+                        <li>Eevee</li>
                     </ul>
                 </div>
 
@@ -221,12 +295,12 @@ export default function App() {
                     })}
                 >
                     <ul>
-                        <li>potion</li>
-                        <li>pokeball</li>
-                        <li>berry</li>
-                        <li>silk scarf</li>
-                        <li>revive</li>
-                        <li>super potion</li>
+                        <li>Potion</li>
+                        <li>Pokeball</li>
+                        <li>Berry</li>
+                        <li>Silk Scarf</li>
+                        <li>Revive</li>
+                        <li>Super Potion</li>
                     </ul>
                 </div>
             </div>
