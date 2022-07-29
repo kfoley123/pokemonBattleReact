@@ -3,58 +3,75 @@ import cs from "classnames";
 
 export default function Menu(props) {
     const {
-        textBoxtext,
-        isMenuHidden,
-        isOppTurn,
+        playerPokemonObject,
+        gameData,
         attackMenu,
         changePokemon,
         item,
-        isBattleMenuHidden,
-        battleMenu,
         run,
         returnToMain,
-        isPartyMenuHidden,
-        isItemMenuHidden,
+        doMove,
     } = props;
+
+    const battleMenu = playerPokemonObject.moves.map((move) => {
+        return (
+            <button
+                className="attack"
+                key={move.name}
+                name={move.name}
+                onClick={doMove}
+            >
+                {move.name}
+            </button>
+        );
+    });
 
     return (
         <div className="menu">
             <div
                 className={cs("textBox", {
-                    hidden: textBoxtext === "",
+                    hidden: gameData.textBoxtext === "",
                 })}
             >
-                {textBoxtext}
+                {gameData.textBoxtext}
             </div>
             <div
                 className={cs("mainMenu", {
-                    hidden: isMenuHidden,
+                    hidden: gameData.isMenuHidden,
                 })}
             >
                 <button
                     className="fight"
-                    disabled={isOppTurn}
+                    disabled={gameData.isOppTurn}
                     onClick={attackMenu}
                 >
                     FIGHT
                 </button>
                 <button
                     className="pkmn"
-                    disabled={isOppTurn}
+                    disabled={gameData.isOppTurn}
                     onClick={changePokemon}
                 >
                     PKMN
                 </button>
-                <button className="item" disabled={isOppTurn} onClick={item}>
+                <button
+                    className="item"
+                    disabled={gameData.isOppTurn}
+                    onClick={item}
+                >
                     ITEM
                 </button>
-                <button className="run" disabled={isOppTurn} onClick={run}>
+                <button
+                    className="run"
+                    disabled={gameData.isOppTurn}
+                    onClick={run}
+                >
                     RUN
                 </button>
             </div>
             <div
                 className={cs("fightMenu", {
-                    hidden: isBattleMenuHidden,
+                    hidden: gameData.isBattleMenuHidden,
                 })}
             >
                 {battleMenu}
@@ -65,7 +82,7 @@ export default function Menu(props) {
 
             <div
                 className={cs("partyList", {
-                    hidden: isPartyMenuHidden,
+                    hidden: gameData.isPartyMenuHidden,
                 })}
             >
                 <ul>
@@ -80,7 +97,7 @@ export default function Menu(props) {
 
             <div
                 className={cs("itemList", {
-                    hidden: isItemMenuHidden,
+                    hidden: gameData.isItemMenuHidden,
                 })}
             >
                 <ul>

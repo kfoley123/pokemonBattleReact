@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import cs from "classnames";
+
 import "./App.css";
 import Foe from "./Foe/Foe";
 import Player from "./Player/Player";
 import Menu from "./Menu/Menu";
 
 export default function App() {
-    const [isMenuHidden, setIsMenuHidden] = useState(false);
-    const [isBattleMenuHidden, setIsBattleMenuHidden] = useState(true);
-    const [isPartyMenuHidden, setIsPartyMenuHidden] = useState(true);
-    const [isItemMenuHidden, setIsItemMenuHidden] = useState(true);
     const [playerHP, setPlayerHP] = useState();
     const [opponentHP, setOpponentHP] = useState();
-    const [textBoxtext, setTextBoxText] = useState("");
-    const [isOppTurn, setIsOppTurn] = useState(false);
+
+    const [gameData, setGameData] = useState({
+        isMenuHidden: false,
+        isBattleMenuHidden: true,
+        isPartyMenuHidden: true,
+        isItemMenuHidden: true,
+        textBoxtext: "",
+        isOppTurn: false,
+    });
 
     const [playerPokemonObject, setplayerPokemonObject] = useState({
         name: "",
@@ -37,26 +40,36 @@ export default function App() {
         return capitalizedName;
     }
 
+    function generatePokemon(response, spritePosition) {
+        let moveSet = [];
+
+        let spriteImage = "";
+        if (spritePosition === "front") {
+            spriteImage = response.sprites.front_default;
+        } else spriteImage = response.sprites.back_default;
+
+        response.moves.forEach((move) => {
+            let pokemonMove = {
+                name: move.move.name,
+                damage: 15,
+            };
+            moveSet.push(pokemonMove);
+        });
+
+        let pokemonObj = {
+            name: capitalize(response.species.name),
+            sprite: spriteImage,
+            hp: response.stats[0].base_stat,
+            moves: moveSet.slice(0, 4),
+        };
+        return pokemonObj;
+    }
+
     useEffect(() => {
         fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
             .then((response) => response.json())
             .then((response) => {
-                let moveSet = [];
-
-                response.moves.forEach((move) => {
-                    let pokemonMove = {
-                        name: move.move.name,
-                        damage: 15,
-                    };
-                    moveSet.push(pokemonMove);
-                });
-
-                let pokemonObj = {
-                    name: capitalize(response.species.name),
-                    sprite: response.sprites.back_default,
-                    hp: response.stats[0].base_stat,
-                    moves: moveSet.slice(0, 4),
-                };
+                let pokemonObj = generatePokemon(response, "back");
                 setplayerPokemonObject(pokemonObj);
                 setPlayerHP(pokemonObj.hp);
             });
@@ -64,54 +77,41 @@ export default function App() {
         fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
             .then((response) => response.json())
             .then((response) => {
-                let moveSet = [];
-
-                response.moves.forEach((move) => {
-                    let pokemonMove = {
-                        name: move.move.name,
-                        damage: 15,
-                    };
-                    moveSet.push(pokemonMove);
-                });
-
-                let pokemonObj = {
-                    name: capitalize(response.species.name),
-                    sprite: response.sprites.front_default,
-                    hp: response.stats[0].base_stat,
-                    moves: moveSet.slice(0, 4),
-                };
+                let pokemonObj = generatePokemon(response, "front");
 
                 setOppPokemonObject(pokemonObj);
                 setOpponentHP(pokemonObj.hp);
             });
     }, []);
 
-    const battleMenu = playerPokemonObject.moves.map((move) => {
-        return (
-            <button
-                className="attack"
-                key={move.name}
-                name={move.name}
-                onClick={doMove}
-            >
-                {move.name}
-            </button>
-        );
-    });
-
     function attackMenu() {
-        setIsMenuHidden(true);
-        setIsBattleMenuHidden(false);
+        setGameData((prevState) => {
+            return {
+                ...prevState,
+                isMenuHidden: true,
+                isBattleMenuHidden: false,
+            };
+        });
     }
 
     function changePokemon() {
-        setIsMenuHidden(true);
-        setIsPartyMenuHidden(false);
+        setGameData((prevState) => {
+            return {
+                ...prevState,
+                isMenuHidden: true,
+                isPartyMenuHidden: false,
+            };
+        });
     }
 
     function item() {
-        setIsMenuHidden(true);
-        setIsItemMenuHidden(false);
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isMenuHidden: true,
+                isItemMenuHidden: false,
+            };
+        });
     }
 
     function run() {
@@ -119,14 +119,24 @@ export default function App() {
     }
 
     function returnToMain() {
-        setIsMenuHidden(false);
-        setIsBattleMenuHidden(true);
-        setIsItemMenuHidden(true);
-        setIsPartyMenuHidden(true);
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isMenuHidden: false,
+                isBattleMenuHidden: true,
+                isItemMenuHidden: true,
+                isPartyMenuHidden: true,
+            };
+        });
     }
 
     function disableMenu(isDisabled) {
-        setIsOppTurn(isDisabled);
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isOppTurn: isDisabled,
+            };
+        });
     }
 
     function doOppMove() {
@@ -134,9 +144,12 @@ export default function App() {
             oppPokemonObject.moves[
                 Math.floor(Math.random() * oppPokemonObject.moves.length)
             ];
-        setTextBoxText(
-            `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`
-        );
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                textBoxtext: `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`,
+            };
+        });
 
         var tempHP = playerHP - opponentMove.damage;
         if (tempHP < 0) {
@@ -149,7 +162,12 @@ export default function App() {
 
     function doMove(moveEvent) {
         var clickedMoveName = moveEvent.target.name;
-        setTextBoxText(` ${playerPokemonObject.name} used ${clickedMoveName} `);
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName} `,
+            };
+        });
 
         playerPokemonObject.moves.forEach((move) => {
             if (move.name === clickedMoveName) {
@@ -162,14 +180,21 @@ export default function App() {
         });
         disableMenu(true);
         returnToMain();
-        setIsOppTurn(true);
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isOppTurn: true,
+            };
+        });
     }
 
     useEffect(() => {
-        if (opponentHP > 0 && isOppTurn) {
+        if (opponentHP > 0 && gameData.isOppTurn) {
             setTimeout(() => {
                 doOppMove();
-                setIsOppTurn(false);
+                setGameData((prevData) => {
+                    return { ...prevData, isOppTurn: false };
+                });
             }, 3000);
         }
 
@@ -191,18 +216,14 @@ export default function App() {
                 playerHP={playerHP}
             />
             <Menu
-                textBoxtext={textBoxtext}
-                isMenuHidden={isMenuHidden}
-                isOppTurn={isOppTurn}
+                gameData={gameData}
                 attackMenu={attackMenu}
                 changePokemon={changePokemon}
                 item={item}
-                isBattleMenuHidden={isBattleMenuHidden}
-                battleMenu={battleMenu}
+                playerPokemonObject={playerPokemonObject}
                 run={run}
                 returnToMain={returnToMain}
-                isPartyMenuHidden={isPartyMenuHidden}
-                isItemMenuHidden={isItemMenuHidden}
+                doMove={doMove}
             />
         </>
     );
