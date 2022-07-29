@@ -1,0 +1,31 @@
+.foeContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.foeStats {
+    border: 2px dashed black;
+    height: 130px;
+    width: 250px;
+    margin-top: 20px;
+    padding: 5px;
+}
+
+.foeNameLevel {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.foeHealthBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.foePokemonLevel {
+    padding: 0 10px 0 70px;
+}
+
+.foeSprite {
+    height: 150px;
+}
