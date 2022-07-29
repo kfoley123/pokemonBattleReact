@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import cs from "classnames";
 import "./App.css";
+import Foe from "./Foe";
 
 export default function App() {
     const [isMenuHidden, setIsMenuHidden] = useState(false);
@@ -58,7 +59,7 @@ export default function App() {
                 setPlayerHP(pokemonObj.hp);
             });
 
-        fetch(`https://pokeapi.co/api/v2/pokemon/${121}`)
+        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
             .then((response) => response.json())
             .then((response) => {
                 let moveSet = [];
@@ -182,28 +183,7 @@ export default function App() {
 
     return (
         <>
-            <div className="foe">
-                <h2>{oppPokemonObject.name}</h2>
-                <h3>L20</h3>
-                <div
-                    className={cs({
-                        healthBar: opponentHP === oppPokemonObject.hp,
-                        healthBar75:
-                            opponentHP < oppPokemonObject.hp * 0.99 &&
-                            opponentHP >= oppPokemonObject.hp * 0.51,
-                        healthBar50:
-                            opponentHP < oppPokemonObject.hp * 0.51 &&
-                            opponentHP >= oppPokemonObject.hp * 0.26,
-                        healthBar25:
-                            opponentHP <= oppPokemonObject.hp * 0.25 &&
-                            opponentHP > 0,
-                        healthBar0: opponentHP === 0,
-                    })}
-                ></div>
-
-                <p className="remainingHealth">{opponentHP}</p>
-                <img src={oppPokemonObject.sprite} alt="sprite" />
-            </div>
+            <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
             <div className="team">
                 <h2>{playerPokemonObject.name}</h2>
                 <h3>L20</h3>
