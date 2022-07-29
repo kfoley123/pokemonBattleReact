@@ -8,6 +8,7 @@ import Menu from "./Menu/Menu";
 export default function App() {
     const [playerHP, setPlayerHP] = useState();
     const [opponentHP, setOpponentHP] = useState();
+    const [moveSet, setMoveSet] = useState([]);
 
     const [gameData, setGameData] = useState({
         isMenuHidden: false,
@@ -41,19 +42,25 @@ export default function App() {
     }
 
     function generatePokemon(response, spritePosition) {
-        let moveSet = [];
-
         let spriteImage = "";
         if (spritePosition === "front") {
             spriteImage = response.sprites.front_default;
         } else spriteImage = response.sprites.back_default;
 
         response.moves.forEach((move) => {
-            let pokemonMove = {
-                name: move.move.name,
-                damage: 15,
-            };
-            moveSet.push(pokemonMove);
+            fetch(`https://pokeapi.co/api/v2/move/${move.move.name}/`)
+                .then((response) => response.json())
+                .then((response) => {
+                    let pokemonMove = {
+                        name: move.move.name,
+                        damage: response.power
+                            ? Math.round(response.power / 2)
+                            : 0,
+                    };
+                    setMoveSet((prevData) => {
+                        return [...prevData, pokemonMove];
+                    });
+                });
         });
 
         let pokemonObj = {
@@ -209,7 +216,7 @@ export default function App() {
     }, [opponentHP, playerHP]);
 
     return (
-        <>
+        <div className="gameContainer">
             <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
             <Player
                 playerPokemonObject={playerPokemonObject}
@@ -225,6 +232,6 @@ export default function App() {
                 returnToMain={returnToMain}
                 doMove={doMove}
             />
-        </>
+        </div>
     );
 }

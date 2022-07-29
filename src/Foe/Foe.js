@@ -23,7 +23,7 @@ export default function Foe(props) {
                 })}
             ></div>
 
-            <p className="remainingHealth">{opponentHP}</p>
+            <p className="oppRemainingHealth">{opponentHP}</p>
             <img src={oppPokemonObject.sprite} alt="sprite" />
         </div>
     );

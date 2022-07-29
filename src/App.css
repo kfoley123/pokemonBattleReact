@@ -1,3 +1,8 @@
+.gameContainer {
+    width: 600px;
+    margin: auto;
+}
+
 .hidden {
     visibility: hidden;
 }
