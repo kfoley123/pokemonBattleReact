@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import cs from "classnames";
 import "./Menu.css";
 import bulbasaurSprite from "../images/bulbasaurSprite.png";
@@ -12,12 +12,12 @@ export default function Menu(props) {
     const {
         playerPokemonObject,
         gameData,
-        attackMenu,
-        changePokemon,
-        item,
-        run,
-        returnToMain,
-        doMove,
+        setGameData,
+        opponentHP,
+        setOpponentHP,
+        playerHP,
+        setPlayerHP,
+        oppPokemonObject,
     } = props;
 
     const battleMenu = playerPokemonObject.moves.map((move) => {
@@ -32,6 +32,123 @@ export default function Menu(props) {
             </button>
         );
     });
+
+    function attackMenu() {
+        setGameData((prevState) => {
+            return {
+                ...prevState,
+                isMenuHidden: true,
+                isBattleMenuHidden: false,
+            };
+        });
+    }
+
+    function changePokemon() {
+        setGameData((prevState) => {
+            return {
+                ...prevState,
+                isMenuHidden: true,
+                isPartyMenuHidden: false,
+            };
+        });
+    }
+
+    function run() {
+        alert("You can't run from a trainer battle!");
+    }
+
+    function item() {
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isMenuHidden: true,
+                isItemMenuHidden: false,
+            };
+        });
+    }
+
+    function returnToMain() {
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isMenuHidden: false,
+                isBattleMenuHidden: true,
+                isItemMenuHidden: true,
+                isPartyMenuHidden: true,
+            };
+        });
+    }
+
+    function disableMenu(isDisabled) {
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isOppTurn: isDisabled,
+            };
+        });
+    }
+
+    function doMove(moveEvent) {
+        var clickedMoveName = moveEvent.target.name;
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName} `,
+            };
+        });
+
+        playerPokemonObject.moves.forEach((move) => {
+            if (move.name === clickedMoveName) {
+                var newHP = opponentHP - move.damage;
+                if (newHP < 0) {
+                    newHP = 0;
+                }
+                setOpponentHP(newHP);
+            }
+        });
+
+        returnToMain();
+        disableMenu(true);
+    }
+
+    function doOppMove() {
+        var opponentMove =
+            oppPokemonObject.moves[
+                Math.floor(Math.random() * oppPokemonObject.moves.length)
+            ];
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                textBoxtext: `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`,
+            };
+        });
+
+        var tempHP = playerHP - opponentMove.damage;
+        if (tempHP < 0) {
+            tempHP = 0;
+        }
+        setPlayerHP(tempHP);
+
+        disableMenu(false);
+    }
+
+    useEffect(() => {
+        if (opponentHP > 0 && gameData.isOppTurn) {
+            setTimeout(() => {
+                doOppMove();
+                disableMenu(false);
+            }, 3000);
+        }
+
+        if (opponentHP === 0) {
+            setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
+            disableMenu(true);
+        }
+        if (playerHP === 0) {
+            setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
+            disableMenu(true);
+        }
+    }, [opponentHP, playerHP, gameData.isOppTurn]);
 
     return (
         <div className="menu">

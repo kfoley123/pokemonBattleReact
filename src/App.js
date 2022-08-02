@@ -8,7 +8,6 @@ import Menu from "./Menu/Menu";
 export default function App() {
     const [playerHP, setPlayerHP] = useState();
     const [opponentHP, setOpponentHP] = useState();
-    const [moveSet, setMoveSet] = useState([]);
 
     const [gameData, setGameData] = useState({
         isMenuHidden: false,
@@ -41,14 +40,10 @@ export default function App() {
         return capitalizedName;
     }
 
-    function generatePokemon(response, spritePosition) {
-        let spriteImage = "";
-        if (spritePosition === "front") {
-            spriteImage = response.sprites.front_default;
-        } else spriteImage = response.sprites.back_default;
-
-        response.moves.forEach((move) => {
-            fetch(`https://pokeapi.co/api/v2/move/${move.move.name}/`)
+    function getMoves(movesArray) {
+        let apiMoves = [];
+        movesArray.forEach((move) => {
+            fetch(`https://pokeapi.co/api/v2/move/${move.move.name}`)
                 .then((response) => response.json())
                 .then((response) => {
                     let pokemonMove = {
@@ -57,17 +52,25 @@ export default function App() {
                             ? Math.round(response.power / 2)
                             : 0,
                     };
-                    setMoveSet((prevData) => {
-                        return [...prevData, pokemonMove];
-                    });
+                    apiMoves.push(pokemonMove);
                 });
         });
+        return apiMoves;
+    }
+
+    function generatePokemon(response, spritePosition) {
+        let spriteImage = "";
+        if (spritePosition === "front") {
+            spriteImage = response.sprites.front_default;
+        } else spriteImage = response.sprites.back_default;
+
+        let moveSet = response.moves.slice(0, 4);
 
         let pokemonObj = {
             name: capitalize(response.species.name),
             sprite: spriteImage,
             hp: response.stats[0].base_stat,
-            moves: moveSet.slice(0, 4),
+            moves: getMoves(moveSet),
         };
         return pokemonObj;
     }
@@ -91,130 +94,6 @@ export default function App() {
             });
     }, []);
 
-    function attackMenu() {
-        setGameData((prevState) => {
-            return {
-                ...prevState,
-                isMenuHidden: true,
-                isBattleMenuHidden: false,
-            };
-        });
-    }
-
-    function changePokemon() {
-        setGameData((prevState) => {
-            return {
-                ...prevState,
-                isMenuHidden: true,
-                isPartyMenuHidden: false,
-            };
-        });
-    }
-
-    function item() {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isMenuHidden: true,
-                isItemMenuHidden: false,
-            };
-        });
-    }
-
-    function run() {
-        alert("You can't run from a trainer battle!");
-    }
-
-    function returnToMain() {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isMenuHidden: false,
-                isBattleMenuHidden: true,
-                isItemMenuHidden: true,
-                isPartyMenuHidden: true,
-            };
-        });
-    }
-
-    function disableMenu(isDisabled) {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isOppTurn: isDisabled,
-            };
-        });
-    }
-
-    function doOppMove() {
-        var opponentMove =
-            oppPokemonObject.moves[
-                Math.floor(Math.random() * oppPokemonObject.moves.length)
-            ];
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                textBoxtext: `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`,
-            };
-        });
-
-        var tempHP = playerHP - opponentMove.damage;
-        if (tempHP < 0) {
-            tempHP = 0;
-        }
-        setPlayerHP(tempHP);
-
-        disableMenu(false);
-    }
-
-    function doMove(moveEvent) {
-        var clickedMoveName = moveEvent.target.name;
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName} `,
-            };
-        });
-
-        playerPokemonObject.moves.forEach((move) => {
-            if (move.name === clickedMoveName) {
-                var newHP = opponentHP - move.damage;
-                if (newHP < 0) {
-                    newHP = 0;
-                }
-                setOpponentHP(newHP);
-            }
-        });
-        disableMenu(true);
-        returnToMain();
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isOppTurn: true,
-            };
-        });
-    }
-
-    useEffect(() => {
-        if (opponentHP > 0 && gameData.isOppTurn) {
-            setTimeout(() => {
-                doOppMove();
-                setGameData((prevData) => {
-                    return { ...prevData, isOppTurn: false };
-                });
-            }, 3000);
-        }
-
-        if (opponentHP === 0) {
-            setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
-            disableMenu(true);
-        }
-        if (playerHP === 0) {
-            setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
-            disableMenu(true);
-        }
-    }, [opponentHP, playerHP]);
-
     return (
         <div className="gameContainer">
             <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
@@ -224,13 +103,13 @@ export default function App() {
             />
             <Menu
                 gameData={gameData}
-                attackMenu={attackMenu}
-                changePokemon={changePokemon}
-                item={item}
+                setGameData={setGameData}
                 playerPokemonObject={playerPokemonObject}
-                run={run}
-                returnToMain={returnToMain}
-                doMove={doMove}
+                opponentHP={opponentHP}
+                setOpponentHP={setOpponentHP}
+                playerHP={playerHP}
+                setPlayerHP={setPlayerHP}
+                oppPokemonObject={oppPokemonObject}
             />
         </div>
     );
