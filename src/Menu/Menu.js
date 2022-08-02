@@ -1,5 +1,12 @@
 import React from "react";
 import cs from "classnames";
+import "./Menu.css";
+import bulbasaurSprite from "../images/bulbasaurSprite.png";
+import charmanderSprite from "../images/charmanderSprite.png";
+import squirtleSprite from "../images/squirtleSprite.png";
+import eeveeSprite from "../images/eeveeSprite.png";
+import ghastlySprite from "../images/ghastlySprite.png";
+import rhydonSprite from "../images/rhydonSprite.png";
 
 export default function Menu(props) {
     const {
@@ -81,26 +88,68 @@ export default function Menu(props) {
             </button>
 
             <div
-                className={cs("partyList", {
+                className={cs({
                     hidden: gameData.isPartyMenuHidden,
                 })}
             >
-                <ul>
-                    <li>Charmander</li>
-                    <li>Bulbasaur</li>
-                    <li>Squirtle</li>
-                    <li>Rhydon</li>
-                    <li>Ghastly</li>
-                    <li>Eevee</li>
+                <ul className="partyList">
+                    <li className="partyItem">
+                        <img
+                            className="sprite"
+                            src={charmanderSprite}
+                            alt="sprite img"
+                        />
+                        Charmander
+                    </li>
+                    <li className="partyItem">
+                        <img
+                            className="sprite"
+                            src={bulbasaurSprite}
+                            alt="sprite img"
+                        />
+                        Bulbasaur
+                    </li>
+                    <li className="partyItem">
+                        <img
+                            className="sprite"
+                            src={squirtleSprite}
+                            alt="sprite img"
+                        />
+                        Squirtle
+                    </li>
+                    <li className="partyItem">
+                        <img
+                            className="sprite"
+                            src={rhydonSprite}
+                            alt="sprite img"
+                        />
+                        Rhydon
+                    </li>
+                    <li className="partyItem">
+                        <img
+                            className="sprite"
+                            src={ghastlySprite}
+                            alt="sprite img"
+                        />
+                        Ghastly
+                    </li>
+                    <li className="partyItem">
+                        <img
+                            className="sprite"
+                            src={eeveeSprite}
+                            alt="sprite img"
+                        />
+                        Eevee
+                    </li>
                 </ul>
             </div>
 
             <div
-                className={cs("itemList", {
+                className={cs({
                     hidden: gameData.isItemMenuHidden,
                 })}
             >
-                <ul>
+                <ul className="itemList">
                     <li>Potion</li>
                     <li>Pokeball</li>
                     <li>Berry</li>

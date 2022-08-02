@@ -7,7 +7,7 @@ export default function Foe(props) {
     return (
         <div className="foeContainer">
             <div className="foeStats">
-                <div className="oppNameLevel">
+                <div className="foeNameLevel">
                     <h2>{oppPokemonObject.name}</h2>
                     <h3>Lv 20</h3>
                 </div>

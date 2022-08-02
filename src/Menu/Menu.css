@@ -1,0 +1,20 @@
+.textBox {
+    border: 1px solid black;
+}
+
+.itemList {
+    list-style: none;
+}
+
+.partyList {
+    list-style: none;
+}
+
+.sprite {
+    width: 20px;
+}
+
+.partyItem {
+    display: flex;
+    align-items: center;
+}
