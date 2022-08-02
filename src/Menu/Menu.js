@@ -274,7 +274,7 @@ export default function Menu(props) {
     return (
         <div className="framed buttons compact">
             <div
-                className={cs("framed nohd", {
+                className={cs("textbox", {
                     hidden: gameData.textBoxtext === "",
                 })}
             >

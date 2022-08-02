@@ -12,11 +12,11 @@
 .playerNameLevel {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 .playerPokemonLevel {
-    padding: 0 10px 0 70px;
+    margin-left: auto;
 }
 
 .healthBox {

@@ -1,10 +1,10 @@
-.textBox {
-    border: 1px solid black;
+.textbox {
+    margin-bottom: 20px;
 }
 
 .itemList {
     list-style: none;
-    width: 200px;
+    width: 280px;
 }
 .item {
     display: flex;
@@ -25,4 +25,7 @@
 .partyItem {
     display: flex;
     align-items: center;
+}
+.back {
+    float: right;
 }
