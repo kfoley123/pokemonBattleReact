@@ -40,27 +40,37 @@ export default function App() {
         return capitalizedName;
     }
 
-    function generatePokemon(response, spritePosition) {
-        let moveSet = [];
+    function getMoves(movesArray) {
+        let apiMoves = [];
+        movesArray.forEach((move) => {
+            fetch(`https://pokeapi.co/api/v2/move/${move.move.name}`)
+                .then((response) => response.json())
+                .then((response) => {
+                    let pokemonMove = {
+                        name: move.move.name,
+                        damage: response.power
+                            ? Math.round(response.power / 2)
+                            : 0,
+                    };
+                    apiMoves.push(pokemonMove);
+                });
+        });
+        return apiMoves;
+    }
 
+    function generatePokemon(response, spritePosition) {
         let spriteImage = "";
         if (spritePosition === "front") {
             spriteImage = response.sprites.front_default;
         } else spriteImage = response.sprites.back_default;
 
-        response.moves.forEach((move) => {
-            let pokemonMove = {
-                name: move.move.name,
-                damage: 15,
-            };
-            moveSet.push(pokemonMove);
-        });
+        let moveSet = response.moves.slice(0, 4);
 
         let pokemonObj = {
             name: capitalize(response.species.name),
             sprite: spriteImage,
             hp: response.stats[0].base_stat,
-            moves: moveSet.slice(0, 4),
+            moves: getMoves(moveSet),
         };
         return pokemonObj;
     }
