@@ -141,7 +141,7 @@ export default function Menu(props) {
             setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
             disableMenu(true);
         }
-    }, [opponentHP, playerHP]);
+    }, [opponentHP, playerHP, gameData.isOppTurn]);
 
     return (
         <div className="menu">
