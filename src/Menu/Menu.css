@@ -4,6 +4,14 @@
 
 .itemList {
     list-style: none;
+    width: 200px;
+}
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 0.5px solid rgb(200, 196, 196);
+    padding: 5px;
 }
 
 .partyList {
@@ -17,4 +25,8 @@
 .partyItem {
     display: flex;
     align-items: center;
+}
+
+li:hover {
+    content: "▶";
 }

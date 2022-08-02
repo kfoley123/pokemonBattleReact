@@ -62,7 +62,7 @@ export default function Menu(props) {
                     PKMN
                 </button>
                 <button
-                    className="item"
+                    className="itemMenu"
                     disabled={gameData.isOppTurn}
                     onClick={item}
                 >
@@ -150,12 +150,24 @@ export default function Menu(props) {
                 })}
             >
                 <ul className="itemList">
-                    <li>Potion</li>
-                    <li>Pokeball</li>
-                    <li>Berry</li>
-                    <li>Silk Scarf</li>
-                    <li>Revive</li>
-                    <li>Super Potion</li>
+                    <li className="item">
+                        Potion <p>x3</p>
+                    </li>
+                    <li className="item">
+                        Pokeball <p>x6</p>
+                    </li>
+                    <li className="item">
+                        Berry <p>x3</p>
+                    </li>
+                    <li className="item">
+                        Silk Scarf <p>x1</p>
+                    </li>
+                    <li className="item">
+                        Revive <p>x1</p>
+                    </li>
+                    <li className="item">
+                        Super Potion <p>x3</p>
+                    </li>
                 </ul>
             </div>
         </div>
