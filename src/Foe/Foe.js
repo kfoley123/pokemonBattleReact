@@ -6,7 +6,7 @@ export default function Foe(props) {
     const { oppPokemonObject, opponentHP } = props;
     return (
         <div className="foeContainer">
-            <div className="foeStats">
+            <div className="framed">
                 <div className="foeNameLevel">
                     <h2>{oppPokemonObject.name}</h2>
                     <h3>Lv 20</h3>

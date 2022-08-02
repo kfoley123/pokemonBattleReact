@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import "./App.css";
+import "./pokemon.css";
 import Foe from "./Foe/Foe";
 import Player from "./Player/Player";
 import Menu from "./Menu/Menu";

@@ -11,7 +11,7 @@ export default function Player(props) {
                 src={playerPokemonObject.sprite}
                 alt="sprite"
             />
-            <div className="playerStats">
+            <div className=" framed">
                 <div className="playerNameLevel">
                     <h2>{playerPokemonObject.name}</h2>
                     <h3 className="playerPokemonLevel">Lv 20</h3>

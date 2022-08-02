@@ -33,6 +33,127 @@ export default function Menu(props) {
         );
     });
 
+    const mainMenu = (
+        <div
+            className={cs("mainMenu", {
+                hidden: gameData.isMenuHidden,
+            })}
+        >
+            <button
+                className="fight"
+                disabled={gameData.isOppTurn}
+                onClick={attackMenu}
+            >
+                FIGHT
+            </button>
+            <button
+                className="pkmn"
+                disabled={gameData.isOppTurn}
+                onClick={changePokemon}
+            >
+                PKMN
+            </button>
+            <button
+                className="itemMenu"
+                disabled={gameData.isOppTurn}
+                onClick={item}
+            >
+                ITEM
+            </button>
+            <button className="run" disabled={gameData.isOppTurn} onClick={run}>
+                RUN
+            </button>
+        </div>
+    );
+
+    const itemMenu = (
+        <div
+            className={cs({
+                hidden: gameData.isItemMenuHidden,
+            })}
+        >
+            <ul className="itemList">
+                <li className="item">
+                    Potion <p>x3</p>
+                </li>
+                <li className="item">
+                    Pokeball <p>x6</p>
+                </li>
+                <li className="item">
+                    Berry <p>x3</p>
+                </li>
+                <li className="item">
+                    Silk Scarf <p>x1</p>
+                </li>
+                <li className="item">
+                    Revive <p>x1</p>
+                </li>
+                <li className="item">
+                    Super Potion <p>x3</p>
+                </li>
+            </ul>
+        </div>
+    );
+
+    const PKMNmenu = (
+        <div
+            className={cs({
+                hidden: gameData.isPartyMenuHidden,
+            })}
+        >
+            <ul className="partyList">
+                <li className="partyItem">
+                    <img
+                        className="sprite"
+                        src={charmanderSprite}
+                        alt="sprite img"
+                    />
+                    Charmander
+                </li>
+                <li className="partyItem">
+                    <img
+                        className="sprite"
+                        src={bulbasaurSprite}
+                        alt="sprite img"
+                    />
+                    Bulbasaur
+                </li>
+                <li className="partyItem">
+                    <img
+                        className="sprite"
+                        src={squirtleSprite}
+                        alt="sprite img"
+                    />
+                    Squirtle
+                </li>
+                <li className="partyItem">
+                    <img
+                        className="sprite"
+                        src={rhydonSprite}
+                        alt="sprite img"
+                    />
+                    Rhydon
+                </li>
+                <li className="partyItem">
+                    <img
+                        className="sprite"
+                        src={ghastlySprite}
+                        alt="sprite img"
+                    />
+                    Ghastly
+                </li>
+                <li className="partyItem">
+                    <img
+                        className="sprite"
+                        src={eeveeSprite}
+                        alt="sprite img"
+                    />
+                    Eevee
+                </li>
+            </ul>
+        </div>
+    );
+
     function attackMenu() {
         setGameData((prevState) => {
             return {
@@ -151,142 +272,26 @@ export default function Menu(props) {
     }, [opponentHP, playerHP, gameData.isOppTurn]);
 
     return (
-        <div className="menu">
+        <div className="framed buttons compact">
             <div
-                className={cs("textBox", {
+                className={cs("framed nohd", {
                     hidden: gameData.textBoxtext === "",
                 })}
             >
                 {gameData.textBoxtext}
             </div>
-            <div
-                className={cs("mainMenu", {
-                    hidden: gameData.isMenuHidden,
-                })}
-            >
-                <button
-                    className="fight"
-                    disabled={gameData.isOppTurn}
-                    onClick={attackMenu}
-                >
-                    FIGHT
-                </button>
-                <button
-                    className="pkmn"
-                    disabled={gameData.isOppTurn}
-                    onClick={changePokemon}
-                >
-                    PKMN
-                </button>
-                <button
-                    className="itemMenu"
-                    disabled={gameData.isOppTurn}
-                    onClick={item}
-                >
-                    ITEM
-                </button>
-                <button
-                    className="run"
-                    disabled={gameData.isOppTurn}
-                    onClick={run}
-                >
-                    RUN
-                </button>
-            </div>
-            <div
-                className={cs("fightMenu", {
-                    hidden: gameData.isBattleMenuHidden,
-                })}
-            >
-                {battleMenu}
-            </div>
+
+            {!gameData.isMenuHidden && mainMenu}
+
+            {!gameData.isBattleMenuHidden && battleMenu}
+
+            {!gameData.isItemMenuHidden && itemMenu}
+
+            {!gameData.isPartyMenuHidden && PKMNmenu}
+
             <button className="back" onClick={returnToMain}>
                 back
             </button>
-
-            <div
-                className={cs({
-                    hidden: gameData.isPartyMenuHidden,
-                })}
-            >
-                <ul className="partyList">
-                    <li className="partyItem">
-                        <img
-                            className="sprite"
-                            src={charmanderSprite}
-                            alt="sprite img"
-                        />
-                        Charmander
-                    </li>
-                    <li className="partyItem">
-                        <img
-                            className="sprite"
-                            src={bulbasaurSprite}
-                            alt="sprite img"
-                        />
-                        Bulbasaur
-                    </li>
-                    <li className="partyItem">
-                        <img
-                            className="sprite"
-                            src={squirtleSprite}
-                            alt="sprite img"
-                        />
-                        Squirtle
-                    </li>
-                    <li className="partyItem">
-                        <img
-                            className="sprite"
-                            src={rhydonSprite}
-                            alt="sprite img"
-                        />
-                        Rhydon
-                    </li>
-                    <li className="partyItem">
-                        <img
-                            className="sprite"
-                            src={ghastlySprite}
-                            alt="sprite img"
-                        />
-                        Ghastly
-                    </li>
-                    <li className="partyItem">
-                        <img
-                            className="sprite"
-                            src={eeveeSprite}
-                            alt="sprite img"
-                        />
-                        Eevee
-                    </li>
-                </ul>
-            </div>
-
-            <div
-                className={cs({
-                    hidden: gameData.isItemMenuHidden,
-                })}
-            >
-                <ul className="itemList">
-                    <li className="item">
-                        Potion <p>x3</p>
-                    </li>
-                    <li className="item">
-                        Pokeball <p>x6</p>
-                    </li>
-                    <li className="item">
-                        Berry <p>x3</p>
-                    </li>
-                    <li className="item">
-                        Silk Scarf <p>x1</p>
-                    </li>
-                    <li className="item">
-                        Revive <p>x1</p>
-                    </li>
-                    <li className="item">
-                        Super Potion <p>x3</p>
-                    </li>
-                </ul>
-            </div>
         </div>
     );
 }
