@@ -84,52 +84,6 @@ export default function App() {
             });
     }, []);
 
-    function attackMenu() {
-        setGameData((prevState) => {
-            return {
-                ...prevState,
-                isMenuHidden: true,
-                isBattleMenuHidden: false,
-            };
-        });
-    }
-
-    function changePokemon() {
-        setGameData((prevState) => {
-            return {
-                ...prevState,
-                isMenuHidden: true,
-                isPartyMenuHidden: false,
-            };
-        });
-    }
-
-    function item() {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isMenuHidden: true,
-                isItemMenuHidden: false,
-            };
-        });
-    }
-
-    function run() {
-        alert("You can't run from a trainer battle!");
-    }
-
-    function returnToMain() {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isMenuHidden: false,
-                isBattleMenuHidden: true,
-                isItemMenuHidden: true,
-                isPartyMenuHidden: true,
-            };
-        });
-    }
-
     function disableMenu(isDisabled) {
         setGameData((prevData) => {
             return {
@@ -158,34 +112,6 @@ export default function App() {
         setPlayerHP(tempHP);
 
         disableMenu(false);
-    }
-
-    function doMove(moveEvent) {
-        var clickedMoveName = moveEvent.target.name;
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName} `,
-            };
-        });
-
-        playerPokemonObject.moves.forEach((move) => {
-            if (move.name === clickedMoveName) {
-                var newHP = opponentHP - move.damage;
-                if (newHP < 0) {
-                    newHP = 0;
-                }
-                setOpponentHP(newHP);
-            }
-        });
-        disableMenu(true);
-        returnToMain();
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isOppTurn: true,
-            };
-        });
     }
 
     useEffect(() => {
@@ -217,13 +143,11 @@ export default function App() {
             />
             <Menu
                 gameData={gameData}
-                attackMenu={attackMenu}
-                changePokemon={changePokemon}
-                item={item}
+                setGameData={setGameData}
                 playerPokemonObject={playerPokemonObject}
-                run={run}
-                returnToMain={returnToMain}
-                doMove={doMove}
+                opponentHP={opponentHP}
+                setOpponentHP={setOpponentHP}
+                disableMenu={disableMenu}
             />
         </>
     );

@@ -5,12 +5,10 @@ export default function Menu(props) {
     const {
         playerPokemonObject,
         gameData,
-        attackMenu,
-        changePokemon,
-        item,
-        run,
-        returnToMain,
-        doMove,
+        setGameData,
+        opponentHP,
+        setOpponentHP,
+        disableMenu,
     } = props;
 
     const battleMenu = playerPokemonObject.moves.map((move) => {
@@ -25,6 +23,80 @@ export default function Menu(props) {
             </button>
         );
     });
+
+    function attackMenu() {
+        setGameData((prevState) => {
+            return {
+                ...prevState,
+                isMenuHidden: true,
+                isBattleMenuHidden: false,
+            };
+        });
+    }
+
+    function changePokemon() {
+        setGameData((prevState) => {
+            return {
+                ...prevState,
+                isMenuHidden: true,
+                isPartyMenuHidden: false,
+            };
+        });
+    }
+
+    function run() {
+        alert("You can't run from a trainer battle!");
+    }
+
+    function item() {
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isMenuHidden: true,
+                isItemMenuHidden: false,
+            };
+        });
+    }
+
+    function returnToMain() {
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isMenuHidden: false,
+                isBattleMenuHidden: true,
+                isItemMenuHidden: true,
+                isPartyMenuHidden: true,
+            };
+        });
+    }
+
+    function doMove(moveEvent) {
+        var clickedMoveName = moveEvent.target.name;
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName} `,
+            };
+        });
+
+        playerPokemonObject.moves.forEach((move) => {
+            if (move.name === clickedMoveName) {
+                var newHP = opponentHP - move.damage;
+                if (newHP < 0) {
+                    newHP = 0;
+                }
+                setOpponentHP(newHP);
+            }
+        });
+        disableMenu(true);
+        returnToMain();
+        setGameData((prevData) => {
+            return {
+                ...prevData,
+                isOppTurn: true,
+            };
+        });
+    }
 
     return (
         <div className="menu">
