@@ -84,56 +84,6 @@ export default function App() {
             });
     }, []);
 
-    function disableMenu(isDisabled) {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isOppTurn: isDisabled,
-            };
-        });
-    }
-
-    function doOppMove() {
-        var opponentMove =
-            oppPokemonObject.moves[
-                Math.floor(Math.random() * oppPokemonObject.moves.length)
-            ];
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                textBoxtext: `Opponent ${oppPokemonObject.name} used ${opponentMove.name}`,
-            };
-        });
-
-        var tempHP = playerHP - opponentMove.damage;
-        if (tempHP < 0) {
-            tempHP = 0;
-        }
-        setPlayerHP(tempHP);
-
-        disableMenu(false);
-    }
-
-    useEffect(() => {
-        if (opponentHP > 0 && gameData.isOppTurn) {
-            setTimeout(() => {
-                doOppMove();
-                setGameData((prevData) => {
-                    return { ...prevData, isOppTurn: false };
-                });
-            }, 3000);
-        }
-
-        if (opponentHP === 0) {
-            setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
-            disableMenu(true);
-        }
-        if (playerHP === 0) {
-            setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
-            disableMenu(true);
-        }
-    }, [opponentHP, playerHP]);
-
     return (
         <>
             <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
@@ -147,7 +97,9 @@ export default function App() {
                 playerPokemonObject={playerPokemonObject}
                 opponentHP={opponentHP}
                 setOpponentHP={setOpponentHP}
-                disableMenu={disableMenu}
+                playerHP={playerHP}
+                setPlayerHP={setPlayerHP}
+                oppPokemonObject={oppPokemonObject}
             />
         </>
     );
