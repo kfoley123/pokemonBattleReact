@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import cs from "classnames";
 import "./Menu.css";
 import bulbasaurSprite from "../images/bulbasaurSprite.png";
@@ -204,21 +204,24 @@ export default function Menu(props) {
         });
     }
 
-    function disableMenu(isDisabled) {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isOppTurn: isDisabled,
-            };
-        });
-    }
+    const disableMenu = useCallback(
+        (isDisabled) => {
+            setGameData((prevData) => {
+                return {
+                    ...prevData,
+                    isOppTurn: isDisabled,
+                };
+            });
+        },
+        [setGameData]
+    );
 
     function doMove(moveEvent) {
         var clickedMoveName = moveEvent.target.name;
         setGameData((prevData) => {
             return {
                 ...prevData,
-                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName} `,
+                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName}! `,
             };
         });
 
@@ -236,7 +239,7 @@ export default function Menu(props) {
         disableMenu(true);
     }
 
-    function doOppMove() {
+    const doOppMove = useCallback(() => {
         var opponentMove =
             oppPokemonObject.moves[
                 Math.floor(Math.random() * oppPokemonObject.moves.length)
@@ -255,7 +258,7 @@ export default function Menu(props) {
         setPlayerHP(tempHP);
 
         disableMenu(false);
-    }
+    }, [disableMenu, oppPokemonObject, playerHP, setGameData, setPlayerHP]);
 
     useEffect(() => {
         if (opponentHP > 0 && gameData.isOppTurn) {
@@ -273,7 +276,7 @@ export default function Menu(props) {
             setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
             disableMenu(true);
         }
-    }, [opponentHP, playerHP, gameData.isOppTurn]);
+    }, [opponentHP, playerHP, gameData.isOppTurn, doOppMove, disableMenu]);
 
     return (
         <div className="framed buttons compact">
