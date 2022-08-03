@@ -1,12 +1,14 @@
-.textbox {
+.textBox {
     margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 .itemList {
     list-style: none;
     width: 280px;
 }
-.item {
+
+.itemList > li {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -52,6 +54,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
 }
-.menuButtons {
+
+.mainMenu > button {
     margin: 10px;
 }
