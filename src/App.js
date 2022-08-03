@@ -17,6 +17,7 @@ export default function App() {
         isItemMenuHidden: true,
         textBoxtext: "",
         isOppTurn: false,
+        endGame: false,
     });
 
     const [playerPokemonObject, setplayerPokemonObject] = useState({
@@ -59,6 +60,10 @@ export default function App() {
         return apiMoves;
     }
 
+    function refreshPage() {
+        window.location.reload();
+    }
+
     function generatePokemon(response, spritePosition) {
         let spriteImage = "";
         if (spritePosition === "front") {
@@ -97,21 +102,49 @@ export default function App() {
 
     return (
         <div className="gameContainer">
-            <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
-            <Player
-                playerPokemonObject={playerPokemonObject}
-                playerHP={playerHP}
-            />
-            <Menu
-                gameData={gameData}
-                setGameData={setGameData}
-                playerPokemonObject={playerPokemonObject}
-                opponentHP={opponentHP}
-                setOpponentHP={setOpponentHP}
-                playerHP={playerHP}
-                setPlayerHP={setPlayerHP}
-                oppPokemonObject={oppPokemonObject}
-            />
+            {!gameData.endGame && (
+                <>
+                    <Foe
+                        oppPokemonObject={oppPokemonObject}
+                        opponentHP={opponentHP}
+                    />
+                    <Player
+                        playerPokemonObject={playerPokemonObject}
+                        playerHP={playerHP}
+                    />
+                    <Menu
+                        gameData={gameData}
+                        setGameData={setGameData}
+                        playerPokemonObject={playerPokemonObject}
+                        opponentHP={opponentHP}
+                        setOpponentHP={setOpponentHP}
+                        playerHP={playerHP}
+                        setPlayerHP={setPlayerHP}
+                        oppPokemonObject={oppPokemonObject}
+                    />
+                </>
+            )}
+
+            <dialog open={gameData.endGame}>
+                <h1 className="gameOverText">
+                    Game Over <br></br>New Game?
+                </h1>
+
+                <form method="dialog">
+                    <div>
+                        <button
+                            className="newGameButton"
+                            name="newGame"
+                            value="default"
+                            onClick={(event) => {
+                                refreshPage();
+                            }}
+                        >
+                            Confirm
+                        </button>
+                    </div>
+                </form>
+            </dialog>
         </div>
     );
 }

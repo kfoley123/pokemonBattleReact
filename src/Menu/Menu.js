@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import cs from "classnames";
 import "./Menu.css";
 import bulbasaurSprite from "../images/bulbasaurSprite.png";
@@ -261,46 +261,55 @@ export default function Menu(props) {
     }, [disableMenu, oppPokemonObject, playerHP, setGameData, setPlayerHP]);
 
     useEffect(() => {
-        if (opponentHP > 0 && gameData.isOppTurn) {
+        if (opponentHP > 0 && gameData.isOppTurn && !gameData.endGame) {
             setTimeout(() => {
                 doOppMove();
                 disableMenu(false);
             }, 3000);
         }
 
-        if (opponentHP === 0) {
-            setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
+        if (opponentHP === 0 || playerHP === 0) {
+            if (!gameData.endGame) {
+                alert(
+                    opponentHP === 0
+                        ? "Opponent's pokemon has fainted!"
+                        : "Player's pokemon has fainted!"
+                );
+
+                setGameData((prevData) => {
+                    return { ...prevData, endGame: true };
+                });
+            }
+
             disableMenu(true);
         }
-        if (playerHP === 0) {
-            setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
-            disableMenu(true);
-        }
-    }, [opponentHP, playerHP, gameData.isOppTurn, doOppMove, disableMenu]);
+    }, [opponentHP, playerHP, gameData, doOppMove, disableMenu, setGameData]);
 
     return (
-        <div className="framed buttons compact">
-            <div
-                className={cs("textbox", {
-                    hidden: gameData.textBoxtext === "",
-                })}
-            >
-                {gameData.textBoxtext}
+        <>
+            <div className="framed buttons compact">
+                <div
+                    className={cs("textbox", {
+                        hidden: gameData.textBoxtext === "",
+                    })}
+                >
+                    {gameData.textBoxtext}
+                </div>
+
+                {!gameData.isMenuHidden && mainMenu}
+
+                <div className="movesMenu">
+                    {!gameData.isBattleMenuHidden && battleMenu}
+                </div>
+
+                {!gameData.isItemMenuHidden && itemMenu}
+
+                {!gameData.isPartyMenuHidden && PKMNmenu}
+
+                <button className="back" onClick={returnToMain}>
+                    back
+                </button>
             </div>
-
-            {!gameData.isMenuHidden && mainMenu}
-
-            <div className="movesMenu">
-                {!gameData.isBattleMenuHidden && battleMenu}
-            </div>
-
-            {!gameData.isItemMenuHidden && itemMenu}
-
-            {!gameData.isPartyMenuHidden && PKMNmenu}
-
-            <button className="back" onClick={returnToMain}>
-                back
-            </button>
-        </div>
+        </>
     );
 }
