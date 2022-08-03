@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import "./App.css";
 import "./pokemon.css";
@@ -64,7 +64,7 @@ export default function App() {
         window.location.reload();
     }
 
-    function generatePokemon(response, spritePosition) {
+    const generatePokemon = useCallback((response, spritePosition) => {
         let spriteImage = "";
         if (spritePosition === "front") {
             spriteImage = response.sprites.front_default;
@@ -79,26 +79,28 @@ export default function App() {
             moves: getMoves(moveSet),
         };
         return pokemonObj;
-    }
+    }, []);
 
     useEffect(() => {
-        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
-            .then((response) => response.json())
-            .then((response) => {
-                let pokemonObj = generatePokemon(response, "back");
-                setplayerPokemonObject(pokemonObj);
-                setPlayerHP(pokemonObj.hp);
-            });
+        if (playerPokemonObject.name === "") {
+            fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+                .then((response) => response.json())
+                .then((response) => {
+                    let pokemonObj = generatePokemon(response, "back");
+                    setplayerPokemonObject(pokemonObj);
+                    setPlayerHP(pokemonObj.hp);
+                });
 
-        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
-            .then((response) => response.json())
-            .then((response) => {
-                let pokemonObj = generatePokemon(response, "front");
+            fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+                .then((response) => response.json())
+                .then((response) => {
+                    let pokemonObj = generatePokemon(response, "front");
 
-                setOppPokemonObject(pokemonObj);
-                setOpponentHP(pokemonObj.hp);
-            });
-    }, []);
+                    setOppPokemonObject(pokemonObj);
+                    setOpponentHP(pokemonObj.hp);
+                });
+        }
+    }, [generatePokemon, playerPokemonObject]);
 
     return (
         <div className="gameContainer">
