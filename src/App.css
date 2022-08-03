@@ -1,5 +1,6 @@
-.hidden {
-    visibility: hidden;
+.gameContainer {
+    width: 600px;
+    margin: auto;
 }
 
 .healthBar {

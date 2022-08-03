@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import "./App.css";
+import "./pokemon.css";
 import Foe from "./Foe/Foe";
 import Player from "./Player/Player";
 import Menu from "./Menu/Menu";
@@ -95,7 +96,7 @@ export default function App() {
     }, []);
 
     return (
-        <>
+        <div className="gameContainer">
             <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
             <Player
                 playerPokemonObject={playerPokemonObject}
@@ -111,6 +112,6 @@ export default function App() {
                 setPlayerHP={setPlayerHP}
                 oppPokemonObject={oppPokemonObject}
             />
-        </>
+        </div>
     );
 }
