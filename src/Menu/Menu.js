@@ -40,27 +40,31 @@ export default function Menu(props) {
             })}
         >
             <button
-                className="fight"
+                className="fight menuButtons "
                 disabled={gameData.isOppTurn}
                 onClick={attackMenu}
             >
                 FIGHT
             </button>
             <button
-                className="pkmn"
+                className="pkmn menuButtons"
                 disabled={gameData.isOppTurn}
                 onClick={changePokemon}
             >
                 PKMN
             </button>
             <button
-                className="itemMenu"
+                className="itemMenu menuButtons"
                 disabled={gameData.isOppTurn}
                 onClick={item}
             >
                 ITEM
             </button>
-            <button className="run" disabled={gameData.isOppTurn} onClick={run}>
+            <button
+                className="run menuButtons"
+                disabled={gameData.isOppTurn}
+                onClick={run}
+            >
                 RUN
             </button>
         </div>
@@ -102,54 +106,54 @@ export default function Menu(props) {
             })}
         >
             <ul className="partyList">
-                <li className="partyItem">
+                <button className="partyItem">
                     <img
                         className="sprite"
                         src={charmanderSprite}
                         alt="sprite img"
                     />
                     Charmander
-                </li>
-                <li className="partyItem">
+                </button>
+                <button className="partyItem ">
                     <img
                         className="sprite"
                         src={bulbasaurSprite}
                         alt="sprite img"
                     />
                     Bulbasaur
-                </li>
-                <li className="partyItem">
+                </button>
+                <button className="partyItem">
                     <img
                         className="sprite"
                         src={squirtleSprite}
                         alt="sprite img"
                     />
                     Squirtle
-                </li>
-                <li className="partyItem">
+                </button>
+                <button className="partyItem">
                     <img
                         className="sprite"
                         src={rhydonSprite}
                         alt="sprite img"
                     />
                     Rhydon
-                </li>
-                <li className="partyItem">
+                </button>
+                <button className="partyItem">
                     <img
                         className="sprite"
                         src={ghastlySprite}
                         alt="sprite img"
                     />
                     Ghastly
-                </li>
-                <li className="partyItem">
+                </button>
+                <button className="partyItem">
                     <img
                         className="sprite"
                         src={eeveeSprite}
                         alt="sprite img"
                     />
                     Eevee
-                </li>
+                </button>
             </ul>
         </div>
     );
@@ -283,7 +287,9 @@ export default function Menu(props) {
 
             {!gameData.isMenuHidden && mainMenu}
 
-            {!gameData.isBattleMenuHidden && battleMenu}
+            <div className="movesMenu">
+                {!gameData.isBattleMenuHidden && battleMenu}
+            </div>
 
             {!gameData.isItemMenuHidden && itemMenu}
 
