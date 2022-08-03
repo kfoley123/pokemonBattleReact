@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import cs from "classnames";
+import React, { useEffect, useCallback } from "react";
 import "./Menu.css";
 import bulbasaurSprite from "../images/bulbasaurSprite.png";
 import charmanderSprite from "../images/charmanderSprite.png";
@@ -34,65 +33,41 @@ export default function Menu(props) {
     });
 
     const mainMenu = (
-        <div
-            className={cs("mainMenu", {
-                hidden: gameData.isMenuHidden,
-            })}
-        >
-            <button
-                className="fight menuButtons "
-                disabled={gameData.isOppTurn}
-                onClick={attackMenu}
-            >
+        <div>
+            <button disabled={gameData.isOppTurn} onClick={attackMenu}>
                 FIGHT
             </button>
-            <button
-                className="pkmn menuButtons"
-                disabled={gameData.isOppTurn}
-                onClick={changePokemon}
-            >
+            <button disabled={gameData.isOppTurn} onClick={changePokemon}>
                 PKMN
             </button>
-            <button
-                className="itemMenu menuButtons"
-                disabled={gameData.isOppTurn}
-                onClick={item}
-            >
+            <button disabled={gameData.isOppTurn} onClick={item}>
                 ITEM
             </button>
-            <button
-                className="run menuButtons"
-                disabled={gameData.isOppTurn}
-                onClick={run}
-            >
+            <button disabled={gameData.isOppTurn} onClick={run}>
                 RUN
             </button>
         </div>
     );
 
     const itemMenu = (
-        <div
-            className={cs({
-                hidden: gameData.isItemMenuHidden,
-            })}
-        >
+        <div>
             <ul className="itemList">
-                <li className="item">
+                <li>
                     Potion <p>x3</p>
                 </li>
-                <li className="item">
+                <li>
                     Pokeball <p>x6</p>
                 </li>
-                <li className="item">
+                <li>
                     Berry <p>x3</p>
                 </li>
-                <li className="item">
+                <li>
                     Silk Scarf <p>x1</p>
                 </li>
-                <li className="item">
+                <li>
                     Revive <p>x1</p>
                 </li>
-                <li className="item">
+                <li>
                     Super Potion <p>x3</p>
                 </li>
             </ul>
@@ -100,17 +75,13 @@ export default function Menu(props) {
     );
 
     const PKMNmenu = (
-        <div
-            className={cs({
-                hidden: gameData.isPartyMenuHidden,
-            })}
-        >
+        <div>
             <ul className="partyList">
                 <button className="partyItem">
                     <img
                         className="sprite"
                         src={charmanderSprite}
-                        alt="sprite img"
+                        alt="charmander sprite"
                     />
                     Charmander
                 </button>
@@ -118,7 +89,7 @@ export default function Menu(props) {
                     <img
                         className="sprite"
                         src={bulbasaurSprite}
-                        alt="sprite img"
+                        alt="bulbasaur sprite "
                     />
                     Bulbasaur
                 </button>
@@ -126,7 +97,7 @@ export default function Menu(props) {
                     <img
                         className="sprite"
                         src={squirtleSprite}
-                        alt="sprite img"
+                        alt="squirtle sprite "
                     />
                     Squirtle
                 </button>
@@ -134,7 +105,7 @@ export default function Menu(props) {
                     <img
                         className="sprite"
                         src={rhydonSprite}
-                        alt="sprite img"
+                        alt="rhydon sprite"
                     />
                     Rhydon
                 </button>
@@ -142,7 +113,7 @@ export default function Menu(props) {
                     <img
                         className="sprite"
                         src={ghastlySprite}
-                        alt="sprite img"
+                        alt="ghastly sprite"
                     />
                     Ghastly
                 </button>
@@ -150,7 +121,7 @@ export default function Menu(props) {
                     <img
                         className="sprite"
                         src={eeveeSprite}
-                        alt="sprite img"
+                        alt="eevee sprite"
                     />
                     Eevee
                 </button>
@@ -286,30 +257,22 @@ export default function Menu(props) {
     }, [opponentHP, playerHP, gameData, doOppMove, disableMenu, setGameData]);
 
     return (
-        <>
-            <div className="framed buttons compact">
-                <div
-                    className={cs("textbox", {
-                        hidden: gameData.textBoxtext === "",
-                    })}
-                >
-                    {gameData.textBoxtext}
-                </div>
+        <div className="framed buttons compact">
+            <div className="textBox">{gameData.textBoxtext}</div>
 
-                {!gameData.isMenuHidden && mainMenu}
+            {!gameData.isMenuHidden && mainMenu}
 
-                <div className="movesMenu">
-                    {!gameData.isBattleMenuHidden && battleMenu}
-                </div>
-
-                {!gameData.isItemMenuHidden && itemMenu}
-
-                {!gameData.isPartyMenuHidden && PKMNmenu}
-
-                <button className="back" onClick={returnToMain}>
-                    back
-                </button>
+            <div className="movesMenu">
+                {!gameData.isBattleMenuHidden && battleMenu}
             </div>
-        </>
+
+            {!gameData.isItemMenuHidden && itemMenu}
+
+            {!gameData.isPartyMenuHidden && PKMNmenu}
+
+            <button className="back" onClick={returnToMain}>
+                back
+            </button>
+        </div>
     );
 }
