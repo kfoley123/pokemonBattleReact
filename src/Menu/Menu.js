@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import cs from "classnames";
 import "./Menu.css";
 import bulbasaurSprite from "../images/bulbasaurSprite.png";
 import charmanderSprite from "../images/charmanderSprite.png";
