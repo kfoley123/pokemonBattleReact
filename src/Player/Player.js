@@ -19,21 +19,26 @@ export default function Player(props) {
                 <div className="healthBox">
                     <div
                         className={cs("healthbar", {
-                            healthBar: playerHP === playerPokemonObject.hp,
+                            healthBar: playerHP === playerPokemonObject.hp + 50,
                             healthBar75:
-                                playerHP < playerPokemonObject.hp * 0.99 &&
-                                playerHP >= playerPokemonObject.hp * 0.51,
+                                playerHP <
+                                    (playerPokemonObject.hp + 50) * 0.99 &&
+                                playerHP >=
+                                    (playerPokemonObject.hp + 50) * 0.51,
                             healthBar50:
-                                playerHP < playerPokemonObject.hp * 0.51 &&
-                                playerHP >= playerPokemonObject.hp * 0.26,
+                                playerHP <
+                                    (playerPokemonObject.hp + 50) * 0.51 &&
+                                playerHP >=
+                                    (playerPokemonObject.hp + 50) * 0.26,
                             healthBar25:
-                                playerHP < playerPokemonObject.hp * 0.25 &&
+                                playerHP <
+                                    (playerPokemonObject.hp + 50) * 0.25 &&
                                 playerHP > 0,
                             healthBar0: playerHP === 0,
                         })}
                     ></div>
                     <p className="remainingHealth">
-                        {playerHP}/{playerPokemonObject.hp}
+                        {playerHP}/{playerPokemonObject.hp + 50}
                     </p>
                 </div>
             </div>

@@ -88,7 +88,7 @@ export default function App() {
                 .then((response) => {
                     let pokemonObj = generatePokemon(response, "back");
                     setplayerPokemonObject(pokemonObj);
-                    setPlayerHP(pokemonObj.hp);
+                    setPlayerHP(pokemonObj.hp + 50);
                 });
 
             fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
@@ -97,7 +97,7 @@ export default function App() {
                     let pokemonObj = generatePokemon(response, "front");
 
                     setOppPokemonObject(pokemonObj);
-                    setOpponentHP(pokemonObj.hp);
+                    setOpponentHP(pokemonObj.hp + 50);
                 });
         }
     }, [generatePokemon, playerPokemonObject]);
