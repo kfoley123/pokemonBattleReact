@@ -18,10 +18,10 @@ export default function Foe(props) {
                             healthBar: opponentHP === oppPokemonObject.hp,
                             healthBar75:
                                 opponentHP < oppPokemonObject.hp * 0.99 &&
-                                opponentHP >= oppPokemonObject.hp * 0.51,
+                                opponentHP >= oppPokemonObject.hp * 0.5,
                             healthBar50:
-                                opponentHP < oppPokemonObject.hp * 0.51 &&
-                                opponentHP >= oppPokemonObject.hp * 0.26,
+                                opponentHP < oppPokemonObject.hp * 0.5 &&
+                                opponentHP >= oppPokemonObject.hp * 0.25,
                             healthBar25:
                                 opponentHP <= oppPokemonObject.hp * 0.25 &&
                                 opponentHP > 0,

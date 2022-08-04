@@ -1,0 +1,13 @@
+.movesMenu {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.attack {
+    display: flex;
+    flex-basis: calc(50% - 30px);
+    justify-content: center;
+    flex-direction: column;
+    margin: 10px;
+}

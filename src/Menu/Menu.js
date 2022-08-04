@@ -1,11 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import "./Menu.css";
-import bulbasaurSprite from "../images/bulbasaurSprite.png";
-import charmanderSprite from "../images/charmanderSprite.png";
-import squirtleSprite from "../images/squirtleSprite.png";
-import eeveeSprite from "../images/eeveeSprite.png";
-import ghastlySprite from "../images/ghastlySprite.png";
-import rhydonSprite from "../images/rhydonSprite.png";
+import Items from "../Items/Items";
+import PKMN from "../PKMN/PKMN";
+import BattleMenu from "../BattleMenu/BattleMenu";
 
 export default function Menu(props) {
     const {
@@ -19,21 +16,8 @@ export default function Menu(props) {
         oppPokemonObject,
     } = props;
 
-    const battleMenu = playerPokemonObject.moves.map((move) => {
-        return (
-            <button
-                className="attack"
-                key={move.name}
-                name={move.name}
-                onClick={doMove}
-            >
-                {move.name}
-            </button>
-        );
-    });
-
     const mainMenu = (
-        <div>
+        <div className="mainMenu">
             <button disabled={gameData.isOppTurn} onClick={attackMenu}>
                 FIGHT
             </button>
@@ -46,86 +30,6 @@ export default function Menu(props) {
             <button disabled={gameData.isOppTurn} onClick={run}>
                 RUN
             </button>
-        </div>
-    );
-
-    const itemMenu = (
-        <div>
-            <ul className="itemList">
-                <li>
-                    Potion <p>x3</p>
-                </li>
-                <li>
-                    Pokeball <p>x6</p>
-                </li>
-                <li>
-                    Berry <p>x3</p>
-                </li>
-                <li>
-                    Silk Scarf <p>x1</p>
-                </li>
-                <li>
-                    Revive <p>x1</p>
-                </li>
-                <li>
-                    Super Potion <p>x3</p>
-                </li>
-            </ul>
-        </div>
-    );
-
-    const PKMNmenu = (
-        <div>
-            <ul className="partyList">
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={charmanderSprite}
-                        alt="charmander sprite"
-                    />
-                    Charmander
-                </button>
-                <button className="partyItem ">
-                    <img
-                        className="sprite"
-                        src={bulbasaurSprite}
-                        alt="bulbasaur sprite "
-                    />
-                    Bulbasaur
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={squirtleSprite}
-                        alt="squirtle sprite "
-                    />
-                    Squirtle
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={rhydonSprite}
-                        alt="rhydon sprite"
-                    />
-                    Rhydon
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={ghastlySprite}
-                        alt="ghastly sprite"
-                    />
-                    Ghastly
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={eeveeSprite}
-                        alt="eevee sprite"
-                    />
-                    Eevee
-                </button>
-            </ul>
         </div>
     );
 
@@ -175,21 +79,24 @@ export default function Menu(props) {
         });
     }
 
-    function disableMenu(isDisabled) {
-        setGameData((prevData) => {
-            return {
-                ...prevData,
-                isOppTurn: isDisabled,
-            };
-        });
-    }
+    const disableMenu = useCallback(
+        (isDisabled) => {
+            setGameData((prevData) => {
+                return {
+                    ...prevData,
+                    isOppTurn: isDisabled,
+                };
+            });
+        },
+        [setGameData]
+    );
 
     function doMove(moveEvent) {
         var clickedMoveName = moveEvent.target.name;
         setGameData((prevData) => {
             return {
                 ...prevData,
-                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName} `,
+                textBoxtext: ` ${playerPokemonObject.name} used ${clickedMoveName}! `,
             };
         });
 
@@ -207,7 +114,7 @@ export default function Menu(props) {
         disableMenu(true);
     }
 
-    function doOppMove() {
+    const doOppMove = useCallback(() => {
         var opponentMove =
             oppPokemonObject.moves[
                 Math.floor(Math.random() * oppPokemonObject.moves.length)
@@ -226,25 +133,40 @@ export default function Menu(props) {
         setPlayerHP(tempHP);
 
         disableMenu(false);
-    }
+    }, [disableMenu, oppPokemonObject, playerHP, setGameData, setPlayerHP]);
 
     useEffect(() => {
-        if (opponentHP > 0 && gameData.isOppTurn) {
+        if (opponentHP > 0 && gameData.isOppTurn && !gameData.endGame) {
             setTimeout(() => {
                 doOppMove();
                 disableMenu(false);
             }, 3000);
         }
 
-        if (opponentHP === 0) {
-            setTimeout(() => alert("Opponent's pokemon has fainted!"), 1000);
+        if (opponentHP === 0 || playerHP === 0) {
+            if (!gameData.endGame) {
+                setGameData((prevData) => {
+                    return {
+                        ...prevData,
+                        textBoxtext:
+                            opponentHP === 0
+                                ? "Opponent's pokemon has fainted! Player wins the game!"
+                                : "Player's pokemon has fainted! Opponent wins the game!",
+                    };
+                });
+            }
+
+            setTimeout(
+                () =>
+                    setGameData((prevData) => {
+                        return { ...prevData, endGame: true };
+                    }),
+                3000
+            );
+
             disableMenu(true);
         }
-        if (playerHP === 0) {
-            setTimeout(() => alert("Player's pokemon has fainted!"), 1000);
-            disableMenu(true);
-        }
-    }, [opponentHP, playerHP, gameData.isOppTurn]);
+    }, [opponentHP, playerHP, gameData, doOppMove, disableMenu, setGameData]);
 
     return (
         <div className="framed buttons compact">
@@ -253,12 +175,17 @@ export default function Menu(props) {
             {!gameData.isMenuHidden && mainMenu}
 
             <div className="movesMenu">
-                {!gameData.isBattleMenuHidden && battleMenu}
+                {!gameData.isBattleMenuHidden && (
+                    <BattleMenu
+                        moves={playerPokemonObject.moves}
+                        doMove={doMove}
+                    />
+                )}
             </div>
 
-            {!gameData.isItemMenuHidden && itemMenu}
+            {!gameData.isItemMenuHidden && <Items />}
 
-            {!gameData.isPartyMenuHidden && PKMNmenu}
+            {!gameData.isPartyMenuHidden && <PKMN />}
 
             <button className="back" onClick={returnToMain}>
                 back

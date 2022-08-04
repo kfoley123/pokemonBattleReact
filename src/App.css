@@ -1,6 +1,18 @@
 .gameContainer {
-    width: 600px;
+    max-width: 600px;
     margin: auto;
+}
+
+dialog {
+    margin-top: 20%;
+}
+
+.newGameButton {
+    margin-left: 25%;
+}
+
+.gameOverText {
+    padding: 10px;
 }
 
 .healthBar {

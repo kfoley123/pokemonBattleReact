@@ -22,10 +22,10 @@ export default function Player(props) {
                             healthBar: playerHP === playerPokemonObject.hp,
                             healthBar75:
                                 playerHP < playerPokemonObject.hp * 0.99 &&
-                                playerHP >= playerPokemonObject.hp * 0.51,
+                                playerHP >= playerPokemonObject.hp * 0.5,
                             healthBar50:
-                                playerHP < playerPokemonObject.hp * 0.51 &&
-                                playerHP >= playerPokemonObject.hp * 0.26,
+                                playerHP < playerPokemonObject.hp * 0.5 &&
+                                playerHP >= playerPokemonObject.hp * 0.25,
                             healthBar25:
                                 playerHP < playerPokemonObject.hp * 0.25 &&
                                 playerHP > 0,

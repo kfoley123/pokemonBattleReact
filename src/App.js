@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import "./App.css";
 import "./pokemon.css";
@@ -17,6 +17,7 @@ export default function App() {
         isItemMenuHidden: true,
         textBoxtext: "",
         isOppTurn: false,
+        endGame: false,
     });
 
     const [playerPokemonObject, setplayerPokemonObject] = useState({
@@ -59,7 +60,11 @@ export default function App() {
         return apiMoves;
     }
 
-    function generatePokemon(response, spritePosition) {
+    function restartGame() {
+        window.location.reload();
+    }
+
+    const generatePokemon = useCallback((response, spritePosition) => {
         let spriteImage = "";
         if (spritePosition === "front") {
             spriteImage = response.sprites.front_default;
@@ -70,48 +75,78 @@ export default function App() {
         let pokemonObj = {
             name: capitalize(response.species.name),
             sprite: spriteImage,
-            hp: response.stats[0].base_stat,
+            hp: response.stats[0].base_stat + 50,
             moves: getMoves(moveSet),
         };
         return pokemonObj;
-    }
+    }, []);
 
     useEffect(() => {
-        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
-            .then((response) => response.json())
-            .then((response) => {
-                let pokemonObj = generatePokemon(response, "back");
-                setplayerPokemonObject(pokemonObj);
-                setPlayerHP(pokemonObj.hp);
-            });
+        if (playerPokemonObject.name === "") {
+            fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+                .then((response) => response.json())
+                .then((response) => {
+                    let pokemonObj = generatePokemon(response, "back");
+                    setplayerPokemonObject(pokemonObj);
+                    setPlayerHP(pokemonObj.hp);
+                });
 
-        fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
-            .then((response) => response.json())
-            .then((response) => {
-                let pokemonObj = generatePokemon(response, "front");
+            fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
+                .then((response) => response.json())
+                .then((response) => {
+                    let pokemonObj = generatePokemon(response, "front");
 
-                setOppPokemonObject(pokemonObj);
-                setOpponentHP(pokemonObj.hp);
-            });
-    }, []);
+                    setOppPokemonObject(pokemonObj);
+                    setOpponentHP(pokemonObj.hp);
+                });
+        }
+    }, [generatePokemon, playerPokemonObject]);
 
     return (
         <div className="gameContainer">
-            <Foe oppPokemonObject={oppPokemonObject} opponentHP={opponentHP} />
-            <Player
-                playerPokemonObject={playerPokemonObject}
-                playerHP={playerHP}
-            />
-            <Menu
-                gameData={gameData}
-                setGameData={setGameData}
-                playerPokemonObject={playerPokemonObject}
-                opponentHP={opponentHP}
-                setOpponentHP={setOpponentHP}
-                playerHP={playerHP}
-                setPlayerHP={setPlayerHP}
-                oppPokemonObject={oppPokemonObject}
-            />
+            {!gameData.endGame && (
+                <>
+                    <Foe
+                        oppPokemonObject={oppPokemonObject}
+                        opponentHP={opponentHP}
+                    />
+                    <Player
+                        playerPokemonObject={playerPokemonObject}
+                        playerHP={playerHP}
+                    />
+                    <Menu
+                        gameData={gameData}
+                        setGameData={setGameData}
+                        playerPokemonObject={playerPokemonObject}
+                        opponentHP={opponentHP}
+                        setOpponentHP={setOpponentHP}
+                        playerHP={playerHP}
+                        setPlayerHP={setPlayerHP}
+                        oppPokemonObject={oppPokemonObject}
+                    />
+                </>
+            )}
+
+            <dialog open={gameData.endGame}>
+                <h1 className="gameOverText">
+                    Game Over <br></br>New Game?
+                </h1>
+
+                <form method="dialog">
+                    <div>
+                        <button
+                            className="newGameButton"
+                            name="newGame"
+                            value="default"
+                            onClick={(event) => {
+                                restartGame();
+                            }}
+                        >
+                            Confirm
+                        </button>
+                    </div>
+                </form>
+            </dialog>
         </div>
     );
 }
