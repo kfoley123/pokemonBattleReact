@@ -23,13 +23,12 @@ export default function Player(props) {
                             healthBar75:
                                 playerHP <
                                     (playerPokemonObject.hp + 50) * 0.99 &&
-                                playerHP >=
-                                    (playerPokemonObject.hp + 50) * 0.51,
+                                playerHP >= (playerPokemonObject.hp + 50) * 0.5,
                             healthBar50:
                                 playerHP <
-                                    (playerPokemonObject.hp + 50) * 0.51 &&
+                                    (playerPokemonObject.hp + 50) * 0.5 &&
                                 playerHP >=
-                                    (playerPokemonObject.hp + 50) * 0.26,
+                                    (playerPokemonObject.hp + 50) * 0.25,
                             healthBar25:
                                 playerHP <
                                     (playerPokemonObject.hp + 50) * 0.25 &&
