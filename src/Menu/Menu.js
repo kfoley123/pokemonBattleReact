@@ -145,16 +145,24 @@ export default function Menu(props) {
 
         if (opponentHP === 0 || playerHP === 0) {
             if (!gameData.endGame) {
-                alert(
-                    opponentHP === 0
-                        ? "Opponent's pokemon has fainted!"
-                        : "Player's pokemon has fainted!"
-                );
-
                 setGameData((prevData) => {
-                    return { ...prevData, endGame: true };
+                    return {
+                        ...prevData,
+                        textBoxtext:
+                            opponentHP === 0
+                                ? "Opponent's pokemon has fainted! Player wins the game!"
+                                : "Player's pokemon has fainted! Opponent wins the game!",
+                    };
                 });
             }
+
+            setTimeout(
+                () =>
+                    setGameData((prevData) => {
+                        return { ...prevData, endGame: true };
+                    }),
+                3000
+            );
 
             disableMenu(true);
         }
