@@ -1,0 +1,12 @@
+.itemList {
+    list-style: none;
+    width: 280px;
+}
+
+.itemList > li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 0.5px solid rgb(200, 196, 196);
+    padding: 5px;
+}

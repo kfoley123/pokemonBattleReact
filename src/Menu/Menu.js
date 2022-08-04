@@ -1,11 +1,8 @@
 import React, { useEffect, useCallback } from "react";
 import "./Menu.css";
-import bulbasaurSprite from "../images/bulbasaurSprite.png";
-import charmanderSprite from "../images/charmanderSprite.png";
-import squirtleSprite from "../images/squirtleSprite.png";
-import eeveeSprite from "../images/eeveeSprite.png";
-import ghastlySprite from "../images/ghastlySprite.png";
-import rhydonSprite from "../images/rhydonSprite.png";
+import Items from "../Items/Items";
+import PKMN from "../PKMN/PKMN";
+import BattleMenu from "../BattleMenu/BattleMenu";
 
 export default function Menu(props) {
     const {
@@ -19,21 +16,8 @@ export default function Menu(props) {
         oppPokemonObject,
     } = props;
 
-    const battleMenu = playerPokemonObject.moves.map((move) => {
-        return (
-            <button
-                className="attack"
-                key={move.name}
-                name={move.name}
-                onClick={doMove}
-            >
-                {move.name}
-            </button>
-        );
-    });
-
     const mainMenu = (
-        <div>
+        <div className="mainMenu">
             <button disabled={gameData.isOppTurn} onClick={attackMenu}>
                 FIGHT
             </button>
@@ -46,86 +30,6 @@ export default function Menu(props) {
             <button disabled={gameData.isOppTurn} onClick={run}>
                 RUN
             </button>
-        </div>
-    );
-
-    const itemMenu = (
-        <div>
-            <ul className="itemList">
-                <li>
-                    Potion <p>x3</p>
-                </li>
-                <li>
-                    Pokeball <p>x6</p>
-                </li>
-                <li>
-                    Berry <p>x3</p>
-                </li>
-                <li>
-                    Silk Scarf <p>x1</p>
-                </li>
-                <li>
-                    Revive <p>x1</p>
-                </li>
-                <li>
-                    Super Potion <p>x3</p>
-                </li>
-            </ul>
-        </div>
-    );
-
-    const PKMNmenu = (
-        <div>
-            <ul className="partyList">
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={charmanderSprite}
-                        alt="charmander sprite"
-                    />
-                    Charmander
-                </button>
-                <button className="partyItem ">
-                    <img
-                        className="sprite"
-                        src={bulbasaurSprite}
-                        alt="bulbasaur sprite "
-                    />
-                    Bulbasaur
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={squirtleSprite}
-                        alt="squirtle sprite "
-                    />
-                    Squirtle
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={rhydonSprite}
-                        alt="rhydon sprite"
-                    />
-                    Rhydon
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={ghastlySprite}
-                        alt="ghastly sprite"
-                    />
-                    Ghastly
-                </button>
-                <button className="partyItem">
-                    <img
-                        className="sprite"
-                        src={eeveeSprite}
-                        alt="eevee sprite"
-                    />
-                    Eevee
-                </button>
-            </ul>
         </div>
     );
 
@@ -263,12 +167,17 @@ export default function Menu(props) {
             {!gameData.isMenuHidden && mainMenu}
 
             <div className="movesMenu">
-                {!gameData.isBattleMenuHidden && battleMenu}
+                {!gameData.isBattleMenuHidden && (
+                    <BattleMenu
+                        moves={playerPokemonObject.moves}
+                        doMove={doMove}
+                    />
+                )}
             </div>
 
-            {!gameData.isItemMenuHidden && itemMenu}
+            {!gameData.isItemMenuHidden && <Items />}
 
-            {!gameData.isPartyMenuHidden && PKMNmenu}
+            {!gameData.isPartyMenuHidden && <PKMN />}
 
             <button className="back" onClick={returnToMain}>
                 back

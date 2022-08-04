@@ -1,0 +1,14 @@
+.partyList {
+    list-style: none;
+}
+
+.sprite {
+    width: 20px;
+    margin-right: 5px;
+}
+
+.partyItem {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+}

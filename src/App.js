@@ -60,7 +60,7 @@ export default function App() {
         return apiMoves;
     }
 
-    function refreshPage() {
+    function restartGame() {
         window.location.reload();
     }
 
@@ -139,7 +139,7 @@ export default function App() {
                             name="newGame"
                             value="default"
                             onClick={(event) => {
-                                refreshPage();
+                                restartGame();
                             }}
                         >
                             Confirm
