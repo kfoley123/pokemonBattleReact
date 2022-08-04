@@ -15,24 +15,22 @@ export default function Foe(props) {
                 <div className="foeHealthBox">
                     <div
                         className={cs({
-                            healthBar: opponentHP === oppPokemonObject.hp + 50,
+                            healthBar: opponentHP === oppPokemonObject.hp,
                             healthBar75:
-                                opponentHP <
-                                    (oppPokemonObject.hp + 50) * 0.99 &&
-                                opponentHP >= (oppPokemonObject.hp + 50) * 0.5,
+                                opponentHP < oppPokemonObject.hp * 0.99 &&
+                                opponentHP >= oppPokemonObject.hp * 0.5,
                             healthBar50:
-                                opponentHP < (oppPokemonObject.hp + 50) * 0.5 &&
-                                opponentHP >= (oppPokemonObject.hp + 50) * 0.25,
+                                opponentHP < oppPokemonObject.hp * 0.5 &&
+                                opponentHP >= oppPokemonObject.hp * 0.25,
                             healthBar25:
-                                opponentHP <=
-                                    (oppPokemonObject.hp + 50) * 0.25 &&
+                                opponentHP <= oppPokemonObject.hp * 0.25 &&
                                 opponentHP > 0,
                             healthBar0: opponentHP === 0,
                         })}
                     ></div>
 
                     <p className="oppRemainingHealth">
-                        {opponentHP}/{oppPokemonObject.hp + 50}
+                        {opponentHP}/{oppPokemonObject.hp}
                     </p>
                 </div>
             </div>

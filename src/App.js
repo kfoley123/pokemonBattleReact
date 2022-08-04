@@ -75,7 +75,7 @@ export default function App() {
         let pokemonObj = {
             name: capitalize(response.species.name),
             sprite: spriteImage,
-            hp: response.stats[0].base_stat,
+            hp: response.stats[0].base_stat + 50,
             moves: getMoves(moveSet),
         };
         return pokemonObj;
@@ -88,7 +88,7 @@ export default function App() {
                 .then((response) => {
                     let pokemonObj = generatePokemon(response, "back");
                     setplayerPokemonObject(pokemonObj);
-                    setPlayerHP(pokemonObj.hp + 50);
+                    setPlayerHP(pokemonObj.hp);
                 });
 
             fetch(`https://pokeapi.co/api/v2/pokemon/${randomNumber(251)}`)
@@ -97,7 +97,7 @@ export default function App() {
                     let pokemonObj = generatePokemon(response, "front");
 
                     setOppPokemonObject(pokemonObj);
-                    setOpponentHP(pokemonObj.hp + 50);
+                    setOpponentHP(pokemonObj.hp);
                 });
         }
     }, [generatePokemon, playerPokemonObject]);
