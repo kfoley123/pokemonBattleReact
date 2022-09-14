@@ -16,6 +16,7 @@ Kortney Foley
 -   JavaScript
 -   CSS
 -   React
+-   [classnames](https://github.com/JedWatson/classnames#readme)
 
 ---
 
