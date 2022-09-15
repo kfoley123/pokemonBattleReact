@@ -1,4 +1,4 @@
-# _Anime Finder App_
+# _Pokemon Battle_
 
 An App that simulates a classic GameBoy style Pokemon battle.
 
